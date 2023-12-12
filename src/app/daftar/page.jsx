@@ -85,7 +85,7 @@ export default function Daftar() {
                     {/* pembatas */}
                     <div className={`${!role && "hidden -translate-x-[200%] duration-700"}`}>
                         <h5 className="flex flex-row gap-3 items-center text-2xl font-bold tracking-tight text-gray-900 dark:text-white -translate-x-[0%] duration-700">
-                            <Button pill size={'xs'} onClick={() => setRole("")}>
+                            <Button pill size={'xs'} onClick={() => {setRole(""); setError(""); setSuces("")}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                                     <path fillRule="evenodd" d="M11.03 3.97a.75.75 0 010 1.06l-6.22 6.22H21a.75.75 0 010 1.5H4.81l6.22 6.22a.75.75 0 11-1.06 1.06l-7.5-7.5a.75.75 0 010-1.06l7.5-7.5a.75.75 0 011.06 0z" clipRule="evenodd" />
                                 </svg>
@@ -95,15 +95,15 @@ export default function Daftar() {
 
                         <form className='flex flex-col gap-4 mt-6' onSubmit={register}>
 
+                            <Alert color="success" icon={HiInformationCircle} className={`${suces == "" && 'hidden'}`}>
+                                <span className="font-medium">Info alert!</span> {suces}
+                            </Alert>
+
+                            <Alert color="failure" icon={HiInformationCircle} className={`${error == "" && 'hidden'}`}>
+                                <span className="font-medium">Info alert!</span> {error}
+                            </Alert>
+
                             <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
-
-                                <Alert color="success" icon={HiInformationCircle} className={`${suces == "" && 'hidden'}`}>
-                                    <span className="font-medium">Info alert!</span> {suces}
-                                </Alert>
-
-                                <Alert color="failure" icon={HiInformationCircle} className={`${error == "" && 'hidden'}`}>
-                                    <span className="font-medium">Info alert!</span> {error}
-                                </Alert>
 
                                 <div>
                                     <div className="mb-2">
