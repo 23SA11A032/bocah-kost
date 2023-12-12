@@ -7,6 +7,7 @@ import orang from '@/assets/orang.svg';
 import rumah from '@/assets/rumah.svg';
 import { useState } from 'react';
 import { HiInformationCircle } from 'react-icons/hi';
+import Link from 'next/link';
 
 export default function Daftar() {
     const [nama, setNama] = useState("");
@@ -41,9 +42,9 @@ export default function Daftar() {
                     role,
                 }),
             });
-            if (result.status == 403) return setError("Akun sudah terdaftar, Silahkan login!");
-            if (result.ok) return setSuces("Akun berhasil di daftarkan.");
-            return setError("Sistem error!");
+            var json = await result.json();
+            if (!result.ok) return setError(json.message);
+            return setSuces("Akun berhasil di daftarkan.");
         } catch (error) {
             console.log(error);
             return setError("Sistem error!");
@@ -55,7 +56,7 @@ export default function Daftar() {
     return (
         <div>
             <div className="flex min-h-screen justify-center items-center py-8">
-                <Card className='max-w-sm lg:max-w-lg w-full relative shadow-lg overflow-hidden'>
+                <Card className='max-w-sm lg:max-w-lg w-full relative shadow-lg overflow-hidden duration-1000'>
                     {/* BATIK */}
                     <img src={batik_putih.src} alt="" className={`absolute -top-1 -right-1 w-28`} />
                     <img src={batik_hitam.src} alt="" className={`absolute -top-1 -right-1 w-28 dark:hidden`} />
@@ -79,8 +80,9 @@ export default function Daftar() {
                                 </div>
                             </Button>
                         </div>
-
+                        <p className='text-right pt-5'>Punya akun? <Link className='underline' href={"/"}>Masuk</Link> </p>
                     </div>
+                    {/* pembatas */}
                     <div className={`${!role && "hidden -translate-x-[200%] duration-700"}`}>
                         <h5 className="flex flex-row gap-3 items-center text-2xl font-bold tracking-tight text-gray-900 dark:text-white -translate-x-[0%] duration-700">
                             <Button pill size={'xs'} onClick={() => setRole("")}>
@@ -94,6 +96,10 @@ export default function Daftar() {
                         <form className='flex flex-col gap-4 mt-6' onSubmit={register}>
 
                             <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+
+                                <Alert color="success" icon={HiInformationCircle} className={`${suces == "" && 'hidden'}`}>
+                                    <span className="font-medium">Info alert!</span> {suces}
+                                </Alert>
 
                                 <Alert color="failure" icon={HiInformationCircle} className={`${error == "" && 'hidden'}`}>
                                     <span className="font-medium">Info alert!</span> {error}
@@ -158,7 +164,7 @@ export default function Daftar() {
                                     <div className="mb-2">
                                         <Label htmlFor="pass" value="Password" />
                                     </div>
-                                    <TextInput id="pass" type="password" placeholder="password" required onChange={e => setPassword(e.target.value)} />
+                                    <TextInput id="pass" type="password" placeholder="password" pattern=".{8,}" title="Katasandi harus memiliki setidaknya 8 karakter" required onChange={e => setPassword(e.target.value)} />
                                 </div>
                             </div>
 
