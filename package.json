@@ -7,7 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "buildStart": "prisma generate && next build && next start"
+    "buildStart": "git pull && prisma generate && next build && next start"
   },
   "dependencies": {
     "next": "14.0.4",
