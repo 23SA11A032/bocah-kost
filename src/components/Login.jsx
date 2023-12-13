@@ -1,9 +1,10 @@
 
 'use client';
 
-import { Button, Checkbox, Label, Modal, TextInput } from 'flowbite-react';
+import { Button, Card, Checkbox, Label, Modal, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { motion } from "framer-motion";
 
 export default function Login() {
     const [openModal, setOpenModal] = useState(false);
@@ -24,42 +25,39 @@ export default function Login() {
     return (
         <>
             <Button onClick={() => setOpenModal(true)}>Masuk</Button>
-            <Modal show={openModal} size="md" onClose={onCloseModal} popup>
-                <Modal.Header className='dark:bg-gray-800 border-t border-x rounded-t-lg relative' />
-                <Modal.Body className='dark:bg-gray-800 border-b border-x border-gray-600 rounded-b-lg'>
-                    <div className="space-y-4">
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Masuk</h3>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="email" value="Email" />
-                            </div>
-                            <TextInput
-                                id="email"
-                                placeholder="email"
-                                value={email}
-                                onChange={(event) => setEmail(event.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="password" value="Password" />
-                            </div>
-                            <TextInput id="password" type="password" placeholder='password' required />
-                        </div>
 
-                        <div className="w-full">
-                            <Button className='w-full'>Masuk</Button>
-                        </div>
-                        <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">
-                            Tidak punya akun?&nbsp;
-                            <Link href="/daftar" className="text-cyan-700 hover:underline dark:text-cyan-500">
-                                Buat akun
-                            </Link>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
+            <div className={`absolute top-0 left-0 z-[1] h-screen flex justify-center items-center bg-gray-900 bg-opacity-50 w-screen ${openModal == false && 'hidden'}`}>
+
+                <motion.div animate={{ width: openModal ? '100%' : '0%', opacity: openModal ? 1 : 0 }} transition={{ duration: 1 }} className="max-w-sm lg:max-w-lg w-full relative shadow-lg ">
+                    <Card>
+                        <form className="flex flex-col gap-4">
+                            <div>
+                                <div className="mb-2 block">
+                                    <Label htmlFor="email1" value="Your email" />
+                                </div>
+                                <TextInput id="email1" type="email" placeholder="name@flowbite.com" required />
+                            </div>
+                            <div>
+                                <div className="mb-2 block">
+                                    <Label htmlFor="password1" value="Your password" />
+                                </div>
+                                <TextInput id="password1" type="password" required />
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Checkbox id="remember" />
+                                <Label htmlFor="remember">Remember me</Label>
+                            </div>
+                            <Button type="submit">Masuk</Button>
+                        </form>
+                        <button className='absolute top-4 right-4' onClick={onCloseModal}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </Card>
+                </motion.div>
+
+            </div>
         </>
     );
 }
