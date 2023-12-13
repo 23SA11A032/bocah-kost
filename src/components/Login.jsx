@@ -24,7 +24,7 @@ export default function Login() {
 
     return (
         <>
-            <Button onClick={() => setOpenModal(true)}>Masuk</Button>
+            <Button onClick={() => {setOpenModal(true); console.log("ehe")}}>Masuk</Button>
 
             <div className={`absolute top-0 left-0 z-[1] h-screen flex justify-center items-center bg-gray-900 bg-opacity-50 w-screen ${openModal == false && 'hidden'}`}>
 
