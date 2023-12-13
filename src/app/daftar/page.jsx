@@ -8,6 +8,7 @@ import rumah from '@/assets/rumah.svg';
 import { useState } from 'react';
 import { HiInformationCircle } from 'react-icons/hi';
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 
 export default function Daftar() {
     const [nama, setNama] = useState("");
@@ -23,6 +24,8 @@ export default function Daftar() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [suces, setSuces] = useState("");
+
+    const router = useRouter();
 
     async function register(e) {
         e.preventDefault();
@@ -44,7 +47,10 @@ export default function Daftar() {
             });
             var json = await result.json();
             if (!result.ok) return setError(json.message);
-            return setSuces("Akun berhasil di daftarkan.");
+            setSuces("Akun berhasil di daftarkan.");
+            await new Promise(r => setTimeout(r, 1700));
+            localStorage.setItem("user", JSON.stringify(json));
+            router.push("/");
         } catch (error) {
             console.log(error);
             return setError("Sistem error!");
@@ -56,7 +62,7 @@ export default function Daftar() {
     return (
         <div>
             <div className="flex min-h-screen justify-center items-center py-8">
-                <Card className='max-w-sm lg:max-w-lg w-full relative shadow-lg overflow-hidden duration-1000'>
+                <Card className='max-w-sm lg:max-w-lg w-full relative shadow-lg overflow-hidden'>
                     {/* BATIK */}
                     <img src={batik_putih.src} alt="" className={`absolute -top-1 -right-1 w-28`} />
                     <img src={batik_hitam.src} alt="" className={`absolute -top-1 -right-1 w-28 dark:hidden`} />
@@ -80,17 +86,17 @@ export default function Daftar() {
                                 </div>
                             </Button>
                         </div>
-                        <p className='text-right pt-5'>Punya akun? <Link className='underline' href={"/"}>Masuk</Link> </p>
+                        <p className='pt-5 text-sm font-medium text-gray-500 dark:text-gray-300'>Punya akun? <Link className='text-cyan-700 hover:underline dark:text-cyan-500' href={"/"}>Masuk</Link> </p>
                     </div>
                     {/* pembatas */}
-                    <div className={`${!role && "hidden -translate-x-[200%] duration-700"}`}>
+                    <div className={`${!role && "hidden -translate-x-[200%]"}`}>
                         <h5 className="flex flex-row gap-3 items-center text-2xl font-bold tracking-tight text-gray-900 dark:text-white -translate-x-[0%] duration-700">
-                            <Button pill size={'xs'} onClick={() => {setRole(""); setError(""); setSuces("")}}>
+                            <Button pill size={'xs'} onClick={() => { setRole(""); setError(""); setSuces(""); }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                                     <path fillRule="evenodd" d="M11.03 3.97a.75.75 0 010 1.06l-6.22 6.22H21a.75.75 0 010 1.5H4.81l6.22 6.22a.75.75 0 11-1.06 1.06l-7.5-7.5a.75.75 0 010-1.06l7.5-7.5a.75.75 0 011.06 0z" clipRule="evenodd" />
                                 </svg>
                             </Button>
-                            <div>Daftar<span className='text-lg bg-gradient-to-r from-teal-700 to-teal-400 bg-clip-text text-transparent'>{` ${role == 'user' ? 'Pencari Kost' : 'Pemilik Kost'}`}</span></div>
+                            <div>Daftar<span className='text-lg bg-gradient-to-r from-teal-700 to-teal-400 bg-clip-text text-transparent pl-4'>{` ${role == 'user' ? 'Pencari Kost' : 'Pemilik Kost'}`}</span></div>
                         </h5>
 
                         <form className='flex flex-col gap-4 mt-6' onSubmit={register}>
@@ -123,27 +129,31 @@ export default function Daftar() {
                                 </div>
                             </div>
 
-                            <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
+                            <div className={`grid grid-cols-1 ${role == 'kos' ? `lg:grid-cols-1` : `lg:grid-cols-2`} gap-2`}>
                                 <div>
                                     <div className="mb-2">
                                         <Label htmlFor="nowa" value="Nomor Whatsapp" />
                                     </div>
                                     <TextInput id="nowa" type="text" placeholder="nomor whatsapp" required onChange={e => setNowa(e.target.value)} />
                                 </div>
-                                <div>
-                                    <div className="mb-2">
+                                <div className={`${role == 'kos' && 'hidden'}`}>
+                                    <div className={`mb-2`}>
                                         <Label htmlFor="pekerjaan" value="Pekerjaan" />
                                     </div>
-                                    <TextInput id="pekerjaan" type="text" placeholder="pekerjaan" required onChange={e => setPekerjaan(e.target.value)} />
+                                    <TextInput id="pekerjaan" type="text" placeholder="pekerjaan" required={role == 'kos' ? false : true} onChange={e => setPekerjaan(e.target.value)} />
                                 </div>
                             </div>
 
-                            <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
-                                <div>
+                            <div className={`grid grid-cols-1 ${role == 'kos' ? `lg:grid-cols-1` : `lg:grid-cols-2`} gap-2`}>
+                                <div className={`${role == 'kos' && 'hidden'}`}>
                                     <div className="mb-2">
                                         <Label htmlFor="status" value="Status" />
                                     </div>
-                                    <TextInput id="status" type="text" placeholder="status" required onChange={e => setStatus(e.target.value)} />
+                                    <Select id="status" required={role == 'kos' ? false : true} onChange={e => setStatus(e.target.value)}>
+                                        <option value="">pilih</option>
+                                        <option value={"Belum Menikah"}>Belum Menikah</option>
+                                        <option value={"Sudah Menikah"}>Sudah Menikah</option>
+                                    </Select>
                                 </div>
                                 <div>
                                     <div className="mb-2">

@@ -1,16 +1,18 @@
 import { Button, DarkThemeToggle, Flowbite } from 'flowbite-react';
+import Login from './Login';
 
-export default function Header() {
+export default function Header({ children }) {
     return (
-        <>
+        <>            
             <div className="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between w-full mx-auto py-2.5 px-4 rounded-lg">
                 <div className='flex flex-row items-center gap-3 text-2xl font-semibold text-gray-900 dark:text-white'>
+                    {children}
                     <Logo />
                     <p>BOCAH<span className='text-red-500'>KOS</span></p>
                 </div>
                 <div className='flex flex-row items-center gap-2'>
                     <DarkThemeToggle />
-                    <Button>Masuk</Button>
+                    <Login />
                 </div>
             </div>
         </>

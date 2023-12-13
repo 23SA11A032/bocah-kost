@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 const User = prisma.user;
@@ -15,9 +15,11 @@ export async function POST(request) {
     if (user) {
       return Response.json({ status: false, message: "Email sudah terdaftar!" }, { status: 403 });
     }
-    body.password = jwt.sign(body.password, process.env.JWT_SECRET)
-    var res = await User.create({ data: body });
-    return Response.json(res);
+    var token = jwt.sign(body, process.env.JWT_SECRET);
+    body.password = jwt.sign(body.password, process.env.JWT_SECRET);
+    await User.create({ data: body });
+    body.token = token;
+    return Response.json(body);
   } catch (error) {
     console.log(error);
     return new Response(error, { status: 500 });
