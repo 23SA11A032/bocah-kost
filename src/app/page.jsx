@@ -16,8 +16,7 @@ export default function Home() {
     return (
         <div className="container mx-auto flex flex-col">
             <Header />
-            <div className="px-2 lg:px-0 self-center container overflow-hidden pt-4"><Carausel images={images} /></div>
-
+            <Carausel images={images} />
         </div>
     )
 }

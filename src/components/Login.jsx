@@ -22,13 +22,21 @@ export default function Login() {
         console.log(JSON.parse(user));
     }, []);
 
+    async function login() {
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
     return (
         <>
             <Button onClick={() => {setOpenModal(true); console.log("ehe")}}>Masuk</Button>
 
             <div className={`absolute top-0 left-0 z-[1] h-screen flex justify-center items-center bg-gray-900 bg-opacity-50 w-screen ${openModal == false && 'hidden'}`}>
 
-                <motion.div animate={{ width: openModal ? '100%' : '0%', opacity: openModal ? 1 : 0 }} transition={{ duration: 1 }} className="max-w-sm lg:max-w-lg w-full relative shadow-lg ">
+                <motion.div animate={{ width: openModal ? '100%' : '0%', opacity: openModal ? 1 : 0, }} transition={{ duration: 2.5 }} className="max-w-sm lg:max-w-lg w-full relative shadow-lg truncate">
                     <Card>
                         <form className="flex flex-col gap-4">
                             <div>

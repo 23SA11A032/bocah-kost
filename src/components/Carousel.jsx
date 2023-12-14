@@ -1,39 +1,43 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
 
 export default function Carausel({ images }) {
-  const [num, setNum] = useState(0);
-
-  useEffect(() => {
-    async function loop() {
-      for (let i in images) {
-        i = Number(i);
-        setNum(i);
-        await new Promise((r) => setTimeout(r, 4000));
-      }
-      for (let i in images) {
-        i = ((images.length - 1) - Number(i));
-        setNum(i);
-        await new Promise((r) => setTimeout(r, 4000));
-      }
-      loop();
-    }
-    loop();
-  }, []);
-
-  return (
-    <>
-      <div className="flex flex-row mx-auto -z-50 translate-x-[50%]">
-        {images.map((v, i) => {
-          if (i != num) {
-            return <img key={i} src={v} alt="" className={`max-w-sm lg:max-w-lg xl:max-w-xl object-contain py-4 px-14 duration-700 rounded-lg overflow-clip`} style={{ transform: `translateX(-${(num * 100) + 50}%)` }} />;
-          }
-          return (
-            <img key={i} src={v} alt="" className={`max-w-sm lg:max-w-lg xl:max-w-xl object-contain duration-1000 rounded-lg`} style={{ transform: `translateX(-${(num * 100) + 50}%)`, borderRadius: `10px` }} />
-          );
-        })}
-      </div>
-    </>
-  );
+    return (
+        <>
+            <Swiper
+                effect={"coverflow"}
+                grabCursor={true}
+                centeredSlides={true}
+                slidesPerView={"auto"}
+                autoplay={{
+                  delay: 2500,
+                  disableOnInteraction: false,
+                }}
+                loop={true}
+                coverflowEffect={{
+                    rotate: 50,
+                    stretch: 0,
+                    depth: 100,
+                    modifier: 1,
+                    slideShadows: true,
+                }}
+                pagination={true}
+                modules={[Autoplay, EffectCoverflow, Pagination]}
+                className="w-full my-4"
+            >
+                {[...images].map((v, i) => {
+                    return (
+                        <SwiperSlide key={i} className="bg-center bg-cover max-w-sm w-full lg:max-w-lg xl:max-w-xl">
+                            <img src={v} className="block w-full rounded-lg" />
+                        </SwiperSlide>
+                    );
+                })}
+            </Swiper>
+        </>
+    );
 }
