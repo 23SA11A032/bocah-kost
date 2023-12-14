@@ -16,7 +16,7 @@ export default function Kos({ children }) {
         <>
             <div className="flex flex-col min-h-screen">
                 <Header>
-                    <button className="lg:hidden rounded-lg" onClick={() => setOpen((op) => !op)}>
+                    <button className="sm:hidden rounded-lg" onClick={() => setOpen((op) => !op)}>
                         {open ? (
                             <>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 duration-500 rotate-90">
@@ -34,14 +34,14 @@ export default function Kos({ children }) {
                 </Header>
                 <div className="flex flex-row flex-1">
                     <div className="relative">
-                        <Sidebar className={`absolute ${!open && "-translate-x-full"} lg:translate-x-0 duration-500 overflow-auto sm:static`} onClick={() => setOpen(false)}>
+                        <Sidebar className={`absolute ${!open && "-translate-x-full"} sm:translate-x-0 duration-500 overflow-auto sm:static z-10 border-gray-700 rounded-r-lg border-r`} onClick={() => setOpen(false)}>
                             <Sidebar.Items>
                                 <Sidebar.ItemGroup>
                                     <Sidebar.Item className={path == '/kos' && 'bg-gray-100 dark:bg-gray-700'} as={Link} href={"/kos"} icon={HiChartPie}>
                                         Dashboard
                                     </Sidebar.Item>
                                     <Sidebar.Item className={path == '/kos/pengaturan' && 'bg-gray-100 dark:bg-gray-700'} as={Link} href={"/kos/pengaturan"} icon={HiCog}>
-                                        Pengaturan
+                                        Pengaturan Kos
                                     </Sidebar.Item>
                                 </Sidebar.ItemGroup>
                                 <Sidebar.ItemGroup>
