@@ -34,7 +34,7 @@ export default function Kos({ children }) {
                 </Header>
                 <div className="flex flex-row flex-1">
                     <div className="relative">
-                        <Sidebar className={`absolute ${!open && "-translate-x-full"} sm:translate-x-0 duration-500 overflow-auto sm:static z-10 border-gray-700 rounded-r-lg border-r`} onClick={() => setOpen(false)}>
+                        <Sidebar className={`absolute ${!open && "-translate-x-full"} sm:translate-x-0 duration-500 overflow-auto sm:static z-10 border-gray-200 dark:border-gray-600 rounded-r-lg border-r`} onClick={() => setOpen(false)}>
                             <Sidebar.Items>
                                 <Sidebar.ItemGroup>
                                     <Sidebar.Item className={path == '/kos' && 'bg-gray-100 dark:bg-gray-700'} as={Link} href={"/kos"} icon={HiChartPie}>
