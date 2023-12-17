@@ -22,6 +22,22 @@ model User {
   updatedAt DateTime   @default(now())
 }
 
+model Kos {
+  id             Int     @id @default(autoincrement())
+  nama           String? @db.VarChar(255)
+  jenisKost      String? @db.VarChar(255)
+  peraturan      String? @db.Text
+  peraturanLain  String? @db.VarChar(255)
+  alamat         String? @db.Text
+  fotoRumah      String? @db.Text
+  fotoKamar      String? @db.Text
+  fotoKamarMandi String? @db.Text
+  fotoFasilitas  String? @db.Text
+  fasilitas      String? @db.Text
+  totalKamar     String? @db.Text
+  harga          String? @db.Text
+}
+
 enum User_jk {
   L
   P

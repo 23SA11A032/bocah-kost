@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import { Flowbite, ThemeModeScript } from 'flowbite-react';
 import './globals.css';
+import Navigation from '@/components/Navigation';
 
 const inter = Inter({ subsets: ['latin'] });
 

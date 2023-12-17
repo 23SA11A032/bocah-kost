@@ -121,7 +121,7 @@ export default function Daftar() {
                                     <div className="mb-2">
                                         <Label htmlFor="jk" value="Jenis Kelamin" />
                                     </div>
-                                    <Select id="jk" required onChange={e => setJk(e.target.value)}>
+                                    <Select defaultValue={""} id="jk" required onChange={e => setJk(e.target.value)}>
                                         <option value="">pilih</option>
                                         <option value={"L"}>laki-laki</option>
                                         <option value={"P"}>perempuan</option>
@@ -149,7 +149,7 @@ export default function Daftar() {
                                     <div className="mb-2">
                                         <Label htmlFor="status" value="Status" />
                                     </div>
-                                    <Select id="status" required={role == 'kos' ? false : true} onChange={e => setStatus(e.target.value)}>
+                                    <Select defaultValue={""} id="status" required={role == 'kos' ? false : true} onChange={e => setStatus(e.target.value)}>
                                         <option value="">pilih</option>
                                         <option value={"Belum Menikah"}>Belum Menikah</option>
                                         <option value={"Sudah Menikah"}>Sudah Menikah</option>

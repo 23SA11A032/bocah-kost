@@ -28,7 +28,7 @@ export default function Carausel({ images }) {
                 }}
                 pagination={true}
                 modules={[Autoplay, EffectCoverflow, Pagination]}
-                className="w-full my-4"
+                className="w-full my-4 rounded-lg"
             >
                 {[...images].map((v, i) => {
                     return (

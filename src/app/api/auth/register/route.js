@@ -17,7 +17,8 @@ export async function POST(request) {
     }
     var token = jwt.sign(body, process.env.JWT_SECRET);
     body.password = jwt.sign(body.password, process.env.JWT_SECRET);
-    await User.create({ data: body });
+    let newUser = await User.create({ data: body });
+    body.id = newUser.id;
     body.token = token;
     return Response.json(body);
   } catch (error) {

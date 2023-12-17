@@ -1,48 +1,66 @@
 "use client";
 
-import { Button, Card, Checkbox, FileInput, Label, Modal, Select, TextInput, Textarea } from "flowbite-react";
+import { Alert, Button, Card, Checkbox, FileInput, Label, Modal, Select, Spinner, TextInput, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiMail, HiXCircle } from "react-icons/hi";
-import { FaRupiahSign } from "react-icons/fa6";
-import { HiMiniTrash } from "react-icons/hi2";
+import { HiInformationCircle, HiMail, HiXCircle } from "react-icons/hi";
+import { FaRupiahSign, FaTrash } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+import reqHeader from "@/utils/reqHeader";
+import axios from 'axios';
 
 export default function Pengaturan() {
+    const router = useRouter();
     const [listKabupaten, setListKabupaten] = useState([]);
     const [listKecamatan, setListKecamatan] = useState([]);
     const [listKelurahan, setListKelurahan] = useState([]);
     const [kabupaten, setKabupaten] = useState("");
     const [kecamatan, setKecamatan] = useState("");
     const [kelurahan, setKelurahan] = useState("");
+    const [fasilitasInput, setFasilitasInput] = useState("");
 
     const [data, setData] = useState({
         nama: "",
         jenisKost: "",
-        peraturan: [
-            { id: 1, status: true, name: "Maks. 1 orang/kamar" },
-            { id: 2, status: true, name: "Maks. 2 orang/kamar" },
-            { id: 3, status: true, name: "Maks. 3 orang/kamar" },
-            { id: 4, status: true, name: "Maks. 4 orang/kamar" },
-            { id: 5, status: true, name: "Max. > 5 orang/kamar" },
-            { id: 6, status: true, name: "Akses 24 Jam" },
-            { id: 7, status: true, name: "Khusus Mahasiswa" },
-            { id: 8, status: true, name: "Untuk Umum" },
-            { id: 9, status: true, name: "Harga termasuk listrik" },
-            { id: 10, status: true, name: "Denda kerusakan barang kos" },
-            { id: 11, status: true, name: "Dilarang merokok di kos" },
-            { id: 12, status: true, name: "Tamu bebas berkunjung" },
-            { id: 13, status: true, name: "Dilarang menerima tamu" },
-            { id: 14, status: true, name: "Dilarang mengundang tamu Lawan jenis" },
-            { id: 15, status: true, name: "Lawan jenis hanya bisa bertamu di teras/ruang tamu" },
-            { id: 16, status: true, name: "Ada jam malam untuk tamu" },
-            { id: 17, status: true, name: "Tidak ada jam malam untuk tamu" },
-            { id: 18, status: true, name: "Para tamu dapat menginap semalam" },
-            { id: 19, status: true, name: "Tamu dilarang menginap" },
-            { id: 20, status: true, name: "Tamu menginap dikenakan biaya" },
-            { id: 21, status: true, name: "Boleh membawa hewan" },
-            { id: 22, status: true, name: "Dilarang bawa hewan" }
-        ],
-        alamat: "",
+        peraturan: [{ id: 1, status: false, name: "Maks. 1 orang/kamar" }, { id: 2, status: false, name: "Maks. 2 orang/kamar" }, { id: 3, status: false, name: "Maks. 3 orang/kamar" }, { id: 4, status: false, name: "Maks. 4 orang/kamar" }, { id: 5, status: false, name: "Max. > 5 orang/kamar" }, { id: 6, status: false, name: "Akses 24 Jam" }, { id: 7, status: false, name: "Khusus Mahasiswa" }, { id: 8, status: false, name: "Untuk Umum" }, { id: 9, status: false, name: "Harga termasuk listrik" }, { id: 10, status: false, name: "Denda kerusakan barang kos" }, { id: 11, status: false, name: "Dilarang merokok di kos" }, { id: 12, status: false, name: "Tamu bebas berkunjung" }, { id: 13, status: false, name: "Dilarang menerima tamu" }, { id: 14, status: false, name: "Dilarang mengundang tamu Lawan jenis" }, { id: 15, status: false, name: "Lawan jenis hanya bisa bertamu di teras/ruang tamu" }, { id: 16, status: false, name: "Ada jam malam untuk tamu" }, { id: 17, status: false, name: "Tidak ada jam malam untuk tamu" }, { id: 18, status: false, name: "Para tamu dapat menginap semalam" }, { id: 19, status: false, name: "Tamu dilarang menginap" }, { id: 20, status: false, name: "Tamu menginap dikenakan biaya" }, { id: 21, status: false, name: "Boleh membawa hewan" }, { id: 22, status: false, name: "Dilarang bawa hewan" }],
+        peraturanLain: "",
+        jenisKost: "",
+        alamat: { kabupaten: "", kecamatan: "", kelurahan: "", alamat: '', linkGMap: "" },
+        fotoRumah: [],
+        fotoKamar: [],
+        fotoKamarMandi: [],
+        fotoFasilitas: [],
+        fasilitas: [{ name: "Fasilitas umum", status: true, default: false }, { name: "Fasilitas kamar", status: false, default: false }, { name: "Fasilitas kamar mandi", status: false, default: false }, { name: "Fasilitas dapur", status: false, default: false }, { name: "Tempat parkir", status: false, default: false }],
+        totalKamar: {
+            total: 0,
+            tersedia: 0,
+            ukuran: {
+                w: 0,
+                h: 0
+            }
+        },
+        harga: {
+            hari: 0,
+            minggu: 0,
+            bulan: 0,
+            semester: 0,
+            tahun: 0,
+        }
     });
+
+    useEffect(() => {
+        (async () => {
+            var user = localStorage.getItem('user');
+            if (!user) return router.push("/");
+            user = JSON.parse(user);
+            var kos = await fetch("/api/kos/" + user.id, {
+                ...reqHeader()
+            });
+            kos = await kos.json();
+            Object.entries(kos).forEach((v, i) => {
+
+            });
+        })();
+    }, []);
 
     useEffect(() => {
         (async () => {
@@ -70,15 +88,55 @@ export default function Pengaturan() {
         })();
     }, [kecamatan]);
 
-    const [imputFasilitasCustom, setImputFasilitasCustom] = useState("");
-    const [fasilitas, setFasilitas] = useState([
-        "Fasilitas umum",
-        "Fasilitas kamar",
-        "Fasilitas kamar mandi",
-        "Fasilitas dapur",
-        "Tempat parkir",
-    ]);
-    const [fasilitasCustom, setFasilitasCustom] = useState([]);
+    const [isUpdate, setIsUpdate] = useState(false);
+    const [updateError, setUpdateError] = useState("");
+    const [updateDone, setUpdateDone] = useState("");
+    async function updateData() {
+        setIsUpdate(true); setUpdateDone(""); setUpdateError("");
+        try {
+            var user = localStorage.getItem('user');
+            user = JSON.parse(user);
+            let datas = { ...data };
+            let list = ['peraturan', 'alamat', 'fotoRumah', 'fotoKamar', 'fotoKamarMandi', 'fotoFasilitas', 'fasilitas', 'totalKamar', 'harga',];
+            for (let v of list) {
+                datas[v] = JSON.stringify(datas[v]);
+            }
+
+            var result = await fetch("/api/kos/" + user.id, { ...reqHeader(), method: "POST", body: JSON.stringify(datas) });
+            if (!result.ok) return setUpdateError("Gagal memperbarui data");
+            setUpdateDone("Data telah di updateData.");
+        } catch (error) {
+            setUpdateError("Error sistem");
+        } finally {
+            setIsUpdate(false);
+        }
+    }
+
+    async function getUpdate() {
+        try {
+            var user = localStorage.getItem('user');
+            user = JSON.parse(user);
+            var res = await axios.get("/api/kos/" + user.id, reqHeader());
+            res = res.data;
+            let list = ['peraturan', 'alamat', 'fotoRumah', 'fotoKamar', 'fotoKamarMandi', 'fotoFasilitas', 'fasilitas', 'totalKamar', 'harga',];
+            for (let v of list) {
+                if (res[v] == null) {
+                    res[v] = data[v];
+                } else {
+                    res[v] = JSON.parse(res[v]);
+                }
+            }
+
+            console.log(res);
+            setData({ ...res });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        getUpdate();
+    }, []);
 
     return (
         <>
@@ -88,14 +146,14 @@ export default function Pengaturan() {
                     <Label htmlFor="nama" className="pl-2">
                         1. Nama Kost
                     </Label>
-                    <TextInput id="nama" type="text" className="max-w-lg" placeholder="nama kost" />
+                    <TextInput id="nama" type="text" className="max-w-lg" placeholder="nama kost" defaultValue={data.nama} onChange={e => setData(v => { v["nama"] = e.target.value; return v; })} />
                 </div>
                 <div className="flex flex-col pt-3 gap-1">
                     <Label htmlFor="jenis" className="pl-2">
                         2. Jenis Kost
                     </Label>
-                    <Select id="jenis" required className="max-w-lg">
-                        <option disabled selected value={""}>
+                    <Select value={data.jenisKost} id="jenis" required className="max-w-lg" onChange={e => setData(v => { v.jenisKost = e.target.value; return { ...v }; })}>
+                        <option value={""} disabled>
                             pilih
                         </option>
                         <option value={"putra"}>putra</option>
@@ -110,32 +168,37 @@ export default function Pengaturan() {
                         <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                             {data.peraturan.map((v, i) => (
                                 <div key={i} className="flex flex-row items-center gap-2">
-                                    <Checkbox className="dark:border-gray-400" id={"peraturan-" + i} />
+                                    <Checkbox className="dark:border-gray-400" id={"peraturan-" + i} checked={v.status} onChange={e => setData(d => { d.peraturan[i].status = !!e.target.checked; return { ...d }; })} />
                                     <Label htmlFor={"peraturan-" + i}>{v.name}</Label>
                                 </div>
                             ))}
                         </div>
+                        <Label>Peraturan lain :</Label>
+                        <Textarea placeholder={"1. ...\n2. ..."} value={data.peraturanLain} onChange={e => setData(v => { v.peraturanLain = e.target.value; return { ...v }; })} />
                     </Card>
                 </div>
                 <div className="flex flex-col pt-3 gap-1">
                     <Label className="pl-2">
                         4. Alamat
                     </Label>
-                    <div className="grid grid-cols-3 gap-2">
-                        <Select required onChange={e => setKabupaten(JSON.parse(e.target.value))}>
-                            <option value={""} disabled selected>kabupaten</option>
-                            {listKabupaten.map((v, i) => <option value={JSON.stringify(v)} key={i}>{v.name}</option>)}
-                        </Select>
-                        <Select required onChange={e => setKecamatan(JSON.parse(e.target.value))}>
-                            <option value={""} disabled selected>kecamatan</option>
-                            {listKecamatan.map((v, i) => <option value={JSON.stringify(v)} key={i}>{v.name}</option>)}
-                        </Select>
-                        <Select required onChange={e => setKelurahan(JSON.parse(e.target.value))}>
-                            <option value={""} disabled selected>kelurahan</option>
-                            {listKelurahan.map((v, i) => <option value={JSON.stringify(v)} key={i}>{v.name}</option>)}
-                        </Select>
-                    </div>
-                    <Textarea placeholder="alamat" required className="mt-1" />
+                    <Card className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
+                        <div className="grid grid-cols-3 gap-2">
+                            <Select required value={data.alamat.kabupaten} onChange={e => { setKabupaten(JSON.parse(e.target.value)); setData(d => { d.alamat.kabupaten = JSON.parse(e.target.value).name; return { ...d }; }); }}>
+                                <option value={data.alamat.kabupaten} disabled selected>{data.alamat.kabupaten ? data.alamat.kabupaten : "kabupaten"}</option>
+                                {listKabupaten.map((v, i) => <option value={JSON.stringify(v)} key={i}>{v.name}</option>)}
+                            </Select>
+                            <Select required value={data.alamat.kecamatan} onChange={e => { setKecamatan(JSON.parse(e.target.value)); setData(d => { d.alamat.kecamatan = JSON.parse(e.target.value).name; return { ...d }; }); }}>
+                                <option value={data.alamat.kecamatan} disabled selected>{data.alamat.kecamatan ? data.alamat.kecamatan : "kecamatan"}</option>
+                                {listKecamatan.map((v, i) => <option value={JSON.stringify(v)} key={i}>{v.name}</option>)}
+                            </Select>
+                            <Select required value={data.alamat.kelurahan} onChange={e => { setKelurahan(JSON.parse(e.target.value)); setData(d => { d.alamat.kelurahan = JSON.parse(e.target.value).name; return { ...d }; }); }}>
+                                <option value={data.alamat.kelurahan} disabled selected>{data.alamat.kelurahan ? data.alamat.kelurahan : "kelurahan"}</option>
+                                {listKelurahan.map((v, i) => <option value={JSON.stringify(v)} key={i}>{v.name}</option>)}
+                            </Select>
+                        </div>
+                        <Textarea placeholder="alamat" required className="" value={data.alamat.alamat} onChange={e => setData(v => { v.alamat["alamat"] = e.target.value; return { ...v }; })} />
+                        <TextInput className="" placeholder="link google maps" value={data.alamat.linkGMap} onChange={e => setData(v => { v.alamat["linkGMap"] = e.target.value; return { ...v }; })} />
+                    </Card>
                 </div>
                 <div className="flex flex-col pt-3 gap-1">
                     <Label htmlFor="file-upload" className="pl-2">
@@ -143,18 +206,51 @@ export default function Pengaturan() {
                     </Label>
                     <Card className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-row flex-wrap gap-3">
-                            {["https://picsum.photos/id/237/200/200"].map((v, i) => {
-                                return (
-                                    <div className="relative w-24" key={i}>
-                                        <HiXCircle className="absolute -top-[5px] -right-[5px] fill-red-500 bg-white rounded-full " size={'22px'} />
-                                        <img src={v} className="border rounded-lg object-cover" alt="" />
-                                    </div>
-                                );
-                            })}
-                            <label className="w-24 border border-dashed rounded-lg flex justify-center items-center">
-                                <p className="font-semibold text-xl">+</p>
-                                <input type="file" name="myfile" className="hidden" />
-                            </label>
+                            {
+                                data.fotoRumah.map((v, i) => {
+                                    if (Number(v)) return;
+                                    return (
+                                        <div className="relative w-24 h-24" key={i}>
+                                            <HiXCircle className="absolute -top-[5px] -right-[5px] fill-red-500 bg-white rounded-full cursor-pointer" size={'22px'} onClick={() => setData(d => { d.fotoRumah.splice(i, 1); return { ...d }; })} />
+                                            <img src={v} className="border rounded-lg object-cover w-24 h-24" alt="" />
+                                        </div>
+                                    );
+                                })
+                            }
+                            {
+
+                                Number(data.fotoRumah[data.fotoRumah.length - 1]) ? (<>
+                                    <label className="w-24 h-24 border border-dashed rounded-lg flex justify-center items-center">
+                                        <p className="font-semibold text-sm">{data.fotoRumah[data.fotoRumah.length - 1] + " %"}</p>
+                                        <input type="file" name="myfile" className="hidden" />
+                                    </label>
+                                </>) : (<>
+                                    <label className="w-24 h-24 border border-dashed rounded-lg flex justify-center items-center">
+                                        <p className="font-semibold text-xl">+</p>
+                                        <input type="file" name="myfile" accept="image/*" className="hidden" onChange={async e => {
+                                            let file = e.target.files[0];
+                                            if (!file) return;
+                                            let formData = new FormData();
+                                            formData.append('key', 'bd3113d71ae0bb1bc328b3a5a0d021fc');
+                                            formData.append('image', file);
+                                            var pan = data.fotoRumah.length;
+
+                                            axios.post('https://api.imgbb.com/1/upload', formData, {
+                                                onUploadProgress: (progressEvent) => {
+                                                    let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                                    setData(d => { d.fotoRumah[pan] = percentCompleted; return { ...d }; });
+                                                },
+                                            })
+                                                .then(response => {
+                                                    setData(d => { d.fotoRumah[pan] = response.data.data.url; return { ...d }; });
+                                                })
+                                                .catch(error => {
+                                                    // handle error
+                                                });
+                                        }} />
+                                    </label>
+                                </>)
+                            }
                         </div>
                     </Card>
                 </div>
@@ -164,18 +260,51 @@ export default function Pengaturan() {
                     </Label>
                     <Card className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-row flex-wrap gap-3">
-                            {["https://picsum.photos/id/237/200/200"].map((v, i) => {
-                                return (
-                                    <div className="relative w-24" key={i}>
-                                        <HiXCircle className="absolute -top-[4px] -right-[4px] fill-red-500 bg-white rounded-full " size={'22px'} />
-                                        <img src={v} className="border rounded-lg object-cover" alt="" />
-                                    </div>
-                                );
-                            })}
-                            <label className="w-24 border border-dashed rounded-lg flex justify-center items-center">
-                                <p className="font-semibold text-xl">+</p>
-                                <input type="file" name="myfile" className="hidden" />
-                            </label>
+                            {
+                                data.fotoKamar.map((v, i) => {
+                                    if (Number(v)) return;
+                                    return (
+                                        <div className="relative w-24 h-24" key={i}>
+                                            <HiXCircle className="absolute -top-[5px] -right-[5px] fill-red-500 bg-white rounded-full cursor-pointer" size={'22px'} onClick={() => setData(d => { d.fotoKamar.splice(i, 1); return { ...d }; })} />
+                                            <img src={v} className="border rounded-lg object-cover w-24 h-24" alt="" />
+                                        </div>
+                                    );
+                                })
+                            }
+                            {
+
+                                Number(data.fotoKamar[data.fotoKamar.length - 1]) ? (<>
+                                    <label className="w-24 h-24 border border-dashed rounded-lg flex justify-center items-center">
+                                        <p className="font-semibold text-sm">{data.fotoKamar[data.fotoKamar.length - 1] + " %"}</p>
+                                        <input type="file" name="myfile" className="hidden" />
+                                    </label>
+                                </>) : (<>
+                                    <label className="w-24 h-24 border border-dashed rounded-lg flex justify-center items-center">
+                                        <p className="font-semibold text-xl">+</p>
+                                        <input type="file" name="myfile" accept="image/*" className="hidden" onChange={async e => {
+                                            let file = e.target.files[0];
+                                            if (!file) return;
+                                            let formData = new FormData();
+                                            formData.append('key', 'bd3113d71ae0bb1bc328b3a5a0d021fc');
+                                            formData.append('image', file);
+                                            var pan = data.fotoKamar.length;
+
+                                            axios.post('https://api.imgbb.com/1/upload', formData, {
+                                                onUploadProgress: (progressEvent) => {
+                                                    let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                                    setData(d => { d.fotoKamar[pan] = percentCompleted; return { ...d }; });
+                                                },
+                                            })
+                                                .then(response => {
+                                                    setData(d => { d.fotoKamar[pan] = response.data.data.url; return { ...d }; });
+                                                })
+                                                .catch(error => {
+                                                    // handle error
+                                                });
+                                        }} />
+                                    </label>
+                                </>)
+                            }
                         </div>
                     </Card>
                 </div>
@@ -185,18 +314,51 @@ export default function Pengaturan() {
                     </Label>
                     <Card className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-row flex-wrap gap-3">
-                            {["https://picsum.photos/id/237/200/200"].map((v, i) => {
-                                return (
-                                    <div className="relative w-24" key={i}>
-                                        <HiXCircle className="absolute -top-[4px] -right-[4px] fill-red-500 bg-white rounded-full " size={'22px'} />
-                                        <img src={v} className="h-24 w-24 border rounded-lg object-cover" alt="" />
-                                    </div>
-                                );
-                            })}
-                            <label className="w-24 border border-dashed rounded-lg flex justify-center items-center">
-                                <p className="font-semibold text-xl">+</p>
-                                <input type="file" name="myfile" className="hidden" />
-                            </label>
+                            {
+                                data.fotoKamarMandi.map((v, i) => {
+                                    if (Number(v)) return;
+                                    return (
+                                        <div className="relative w-24 h-24" key={i}>
+                                            <HiXCircle className="absolute -top-[5px] -right-[5px] fill-red-500 bg-white rounded-full cursor-pointer" size={'22px'} onClick={() => setData(d => { d.fotoKamarMandi.splice(i, 1); return { ...d }; })} />
+                                            <img src={v} className="border rounded-lg object-cover w-24 h-24" alt="" />
+                                        </div>
+                                    );
+                                })
+                            }
+                            {
+
+                                Number(data.fotoKamarMandi[data.fotoKamarMandi.length - 1]) ? (<>
+                                    <label className="w-24 h-24 border border-dashed rounded-lg flex justify-center items-center">
+                                        <p className="font-semibold text-sm">{data.fotoKamarMandi[data.fotoKamarMandi.length - 1] + " %"}</p>
+                                        <input type="file" name="myfile" className="hidden" />
+                                    </label>
+                                </>) : (<>
+                                    <label className="w-24 h-24 border border-dashed rounded-lg flex justify-center items-center">
+                                        <p className="font-semibold text-xl">+</p>
+                                        <input type="file" name="myfile" accept="image/*" className="hidden" onChange={async e => {
+                                            let file = e.target.files[0];
+                                            if (!file) return;
+                                            let formData = new FormData();
+                                            formData.append('key', 'bd3113d71ae0bb1bc328b3a5a0d021fc');
+                                            formData.append('image', file);
+                                            var pan = data.fotoKamarMandi.length;
+
+                                            axios.post('https://api.imgbb.com/1/upload', formData, {
+                                                onUploadProgress: (progressEvent) => {
+                                                    let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                                    setData(d => { d.fotoKamarMandi[pan] = percentCompleted; return { ...d }; });
+                                                },
+                                            })
+                                                .then(response => {
+                                                    setData(d => { d.fotoKamarMandi[pan] = response.data.data.url; return { ...d }; });
+                                                })
+                                                .catch(error => {
+                                                    // handle error
+                                                });
+                                        }} />
+                                    </label>
+                                </>)
+                            }
                         </div>
                     </Card>
                 </div>
@@ -206,18 +368,51 @@ export default function Pengaturan() {
                     </Label>
                     <Card className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-row flex-wrap gap-3">
-                            {["https://picsum.photos/id/237/200/200"].map((v, i) => {
-                                return (
-                                    <div className="relative w-24" key={i}>
-                                        <HiXCircle className="absolute -top-[4px] -right-[4px] fill-red-500 bg-white rounded-full " size={'22px'} />
-                                        <img src={v} className="w-24 border rounded-lg object-cover" alt="" />
-                                    </div>
-                                );
-                            })}
-                            <label className="w-24 border border-dashed rounded-lg flex justify-center items-center">
-                                <p className="font-semibold text-xl">+</p>
-                                <input type="file" name="myfile" className="hidden" />
-                            </label>
+                            {
+                                data.fotoFasilitas.map((v, i) => {
+                                    if (Number(v)) return;
+                                    return (
+                                        <div className="relative w-24 h-24" key={i}>
+                                            <HiXCircle className="absolute -top-[5px] -right-[5px] fill-red-500 bg-white rounded-full cursor-pointer" size={'22px'} onClick={() => setData(d => { d.fotoFasilitas.splice(i, 1); return { ...d }; })} />
+                                            <img src={v} className="border rounded-lg object-cover w-24 h-24" alt="" />
+                                        </div>
+                                    );
+                                })
+                            }
+                            {
+
+                                Number(data.fotoFasilitas[data.fotoFasilitas.length - 1]) ? (<>
+                                    <label className="w-24 h-24 border border-dashed rounded-lg flex justify-center items-center">
+                                        <p className="font-semibold text-sm">{data.fotoFasilitas[data.fotoFasilitas.length - 1] + " %"}</p>
+                                        <input type="file" name="myfile" className="hidden" />
+                                    </label>
+                                </>) : (<>
+                                    <label className="w-24 h-24 border border-dashed rounded-lg flex justify-center items-center">
+                                        <p className="font-semibold text-xl">+</p>
+                                        <input type="file" name="myfile" accept="image/*" className="hidden" onChange={async e => {
+                                            let file = e.target.files[0];
+                                            if (!file) return;
+                                            let formData = new FormData();
+                                            formData.append('key', 'bd3113d71ae0bb1bc328b3a5a0d021fc');
+                                            formData.append('image', file);
+                                            var pan = data.fotoFasilitas.length;
+
+                                            axios.post('https://api.imgbb.com/1/upload', formData, {
+                                                onUploadProgress: (progressEvent) => {
+                                                    let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                                    setData(d => { d.fotoFasilitas[pan] = percentCompleted; return { ...d }; });
+                                                },
+                                            })
+                                                .then(response => {
+                                                    setData(d => { d.fotoFasilitas[pan] = response.data.data.url; return { ...d }; });
+                                                })
+                                                .catch(error => {
+                                                    // handle error
+                                                });
+                                        }} />
+                                    </label>
+                                </>)
+                            }
                         </div>
                     </Card>
                 </div>
@@ -226,25 +421,17 @@ export default function Pengaturan() {
                         9. Fasilitas
                     </Label>
                     <div className="flex flex-row max-w-lg gap-2">
-                        <TextInput type="text" sizing="sm" className="flex-1" placeholder="tambah fasilitas" onChange={e => setImputFasilitasCustom(e.target.value)} />
-                        <Button size="xs" onClick={() => setFasilitasCustom(s => { s.push(imputFasilitasCustom); return [...s]; })}>Tambah</Button>
+                        <TextInput type="text" sizing="sm" className="flex-1" placeholder="tambah fasilitas" onChange={e => setFasilitasInput(e.target.value)} />
+                        <Button size="xs" onClick={() => setData(s => { s.fasilitas = [...s.fasilitas, { name: fasilitasInput, default: false, status: false }]; return { ...s }; })}>Tambah</Button>
                     </div>
                     <Card className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 mt-1">
                         <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-                            {fasilitas.map((v, i) => {
+                            {data.fasilitas.map((v, i) => {
                                 return (
                                     <div key={i} className="flex flex-row items-center gap-2">
-                                        <Checkbox className="dark:border-gray-400" id={String(v).replace(/ +/g, "")} />
-                                        <Label htmlFor={String(v).replace(/ +/g, "")}>{v}</Label>
-                                    </div>
-                                );
-                            })}
-                            {fasilitasCustom.map((v, i) => {
-                                return (
-                                    <div key={i} className="flex flex-row items-center gap-2">
-                                        <Checkbox className="dark:border-gray-400" id={String(v).replace(/ +/g, "")} />
-                                        <Label htmlFor={String(v).replace(/ +/g, "")} className="truncate flex-1" >{v}</Label>
-                                        <Button size={'xs'} color="red" className="p-0" onClick={() => setFasilitasCustom(s => { s.splice(i, 1); return [...s]; })}><HiMiniTrash size={10} /></Button>
+                                        <Checkbox className="dark:border-gray-400" id={"fasilitas-" + i} checked={v.status} onClick={es => setData(d => { d.fasilitas[i].status = es.target.checked; return { ...d }; })} />
+                                        <Label className="flex-1 truncate" htmlFor={"fasilitas-" + i}>{v.name}</Label>
+                                        {v.default == false && <Button className="mr-8 bg-red-800" onClick={() => setData(d => { console.log(d); d.fasilitas.splice(i, 1); return { ...d }; })} size={"xs"}><FaTrash size={10} /></Button>}
                                     </div>
                                 );
                             })}
@@ -261,7 +448,7 @@ export default function Pengaturan() {
                                 <Label htmlFor="file-upload" className="pl-1">
                                     Total kamar :
                                 </Label>
-                                <Select id="countries" required className="w-[100px]">
+                                <Select value={data.totalKamar.total} id="countries" required className="w-[100px]" onChange={e => setData(d => { d.totalKamar.total = e.target.value; return { ...d }; })}>
                                     {Array.from({ length: 50 }).map((_, i) => {
                                         return <option value={i + 1} key={i}>{i + 1}</option>;
                                     })}
@@ -271,7 +458,7 @@ export default function Pengaturan() {
                                 <Label htmlFor="file-upload" className="pl-1">
                                     Kamar tersedia :
                                 </Label>
-                                <Select id="countries" required className="w-[100px]">
+                                <Select value={data.totalKamar.tersedia} id="countries" required className="w-[100px]" onChange={e => setData(d => { d.totalKamar.tersedia = e.target.value; return { ...d }; })}>
                                     {Array.from({ length: 50 }).map((_, i) => {
                                         return <option value={i + 1} key={i}>{i + 1}</option>;
                                     })}
@@ -282,9 +469,9 @@ export default function Pengaturan() {
                                     Ukuran Kamar :
                                 </Label>
                                 <div className="flex flex-row items-center gap-2">
-                                    <TextInput rightIcon={MeterIcon} className="w-[100px] m-0" />
+                                    <TextInput rightIcon={MeterIcon} className="w-[100px] m-0" onChange={e => setData(d => { d.totalKamar.ukuran.w = e.target.value; return { ...d }; })} />
                                     <p>X</p>
-                                    <TextInput rightIcon={MeterIcon} className="w-[100px]" />
+                                    <TextInput rightIcon={MeterIcon} className="w-[100px]" onChange={e => setData(d => { d.totalKamar.ukuran.h = e.target.value; return { ...d }; })} />
                                 </div>
                             </div>
                         </div>
@@ -300,34 +487,52 @@ export default function Pengaturan() {
                                 <Label htmlFor="file-upload" className="pl-1">
                                     Harga/hari :
                                 </Label>
-                                <TextInput icon={() => <FaRupiahSign size={14} />} className="max-w-lg" />
+                                <TextInput value={data.harga.hari} icon={() => <FaRupiahSign size={14} />} className="max-w-lg" onChange={e => setData(d => { d.harga.hari = e.target.value; return { ...d }; })} />
                             </div>
                             <div className="flex flex-col gap-1 col-span-2">
                                 <Label htmlFor="file-upload" className="pl-1">
                                     Harga/minggu :
                                 </Label>
-                                <TextInput icon={() => <FaRupiahSign size={14} />} className="max-w-lg" />
+                                <TextInput value={data.harga.minggu} icon={() => <FaRupiahSign size={14} />} className="max-w-lg" onChange={e => setData(d => { d.harga.minggu = e.target.value; return { ...d }; })} />
                             </div>
                             <div className="flex flex-col gap-1 col-span-2">
                                 <Label htmlFor="file-upload" className="pl-1">
                                     Harga/bulan :
                                 </Label>
-                                <TextInput icon={() => <FaRupiahSign size={14} />} className="max-w-lg" />
+                                <TextInput value={data.harga.bulan} icon={() => <FaRupiahSign size={14} />} className="max-w-lg" onChange={e => setData(d => { d.harga.bulan = e.target.value; return { ...d }; })} />
                             </div>
                             <div className="flex flex-col gap-1 col-span-2">
                                 <Label htmlFor="file-upload" className="pl-1">
                                     Harga/6 bulan :
                                 </Label>
-                                <TextInput icon={() => <FaRupiahSign size={14} />} className="max-w-lg" />
+                                <TextInput value={data.harga.semester} icon={() => <FaRupiahSign size={14} />} className="max-w-lg" onChange={e => setData(d => { d.harga.semester = e.target.value; return { ...d }; })} />
                             </div>
                             <div className="flex flex-col gap-1 col-span-2">
                                 <Label htmlFor="file-upload" className="pl-1">
                                     Harga/tahun :
                                 </Label>
-                                <TextInput icon={() => <FaRupiahSign size={14} />} className="max-w-lg" />
+                                <TextInput value={data.harga.tahun} icon={() => <FaRupiahSign size={14} />} className="max-w-lg" onChange={e => setData(d => { d.harga.tahun = e.target.value; return { ...d }; })} />
                             </div>
                         </div>
                     </Card>
+                </div>
+                <div className="flex flex-row gap-4 items-center mt-6">
+                    {
+                        !isUpdate ? (
+                            <Button className="w-fit" onClick={updateData}>Update</Button>
+                        ) : (
+                            <Button>
+                                <Spinner aria-label="Spinner button example" size="sm" />
+                                <span className="pl-3">Loading...</span>
+                            </Button>
+                        )
+                    }
+                    <Alert color="success" icon={HiInformationCircle} className={`w-fit ${!updateDone && "hidden"}`}>
+                        <span className="font-medium">Info alert!</span> {updateDone}
+                    </Alert>
+                    <Alert color="failure" icon={HiInformationCircle} className={`w-fit ${!updateError && "hidden"}`}>
+                        <span className="font-medium">Info alert!</span> {updateError}
+                    </Alert>
                 </div>
                 {/*  */}
             </div>

@@ -1,9 +1,20 @@
+'use client'
+
 import { Button, DarkThemeToggle, Flowbite } from 'flowbite-react';
 import Login from './Login';
+import { useEffect, useState } from 'react';
+import Logout from './Logout';
 
 export default function Header({ children }) {
+    const [user, setUser] = useState(false);
+
+    useEffect(() => {
+        var usr = localStorage.getItem("user");
+        if (usr) setUser(true);
+    }, []);
+
     return (
-        <>            
+        <>
             <div className="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between w-full mx-auto py-2.5 px-4 rounded-lg">
                 <div className='flex flex-row items-center gap-3 text-2xl font-semibold text-gray-900 dark:text-white'>
                     {children}
@@ -12,7 +23,7 @@ export default function Header({ children }) {
                 </div>
                 <div className='flex flex-row items-center gap-2'>
                     <DarkThemeToggle />
-                    <Login />
+                    {user ? <Logout /> : <Login />}
                 </div>
             </div>
         </>
