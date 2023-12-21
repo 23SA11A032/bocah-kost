@@ -1,10 +1,12 @@
 "use client";
 
 import Carausel from "@/components/Carousel";
+import { getKosts } from "@/lib/utils";
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import { Badge, Rating, RatingStar } from "flowbite-react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const { parse } = JSON;
 
@@ -25,7 +27,6 @@ export default function Home() {
             <Carausel images={images} />
             <Content />
             <Navigation />
-            <div className="h-20"></div>
         </div>
     );
 }
@@ -34,17 +35,11 @@ function Content() {
     const [kos, setKos] = useState([]);
 
     useEffect(() => {
-        (async () => {
-            var res = await fetch("/api/kos");
-            var json = await res.json();
-            setKos([...json]);
-        })();
+        getKosts().then((res) => setKos([...res]));
     }, []);
 
-    console.log(kos);
-
     return (
-        <div className="px-3">
+        <div className="px-3 mb-20">
             <p className="text-xl font-semibold mb-4">Putra</p>
             <div className="overflow-auto">
                 <div className="grid grid-flow-col gap-4">
@@ -52,35 +47,37 @@ function Content() {
                         if (!parse(v.fotoRumah)?.[0]) return;
                         if (v.jenisKost == "putri") return;
                         return (
-                            <div key={i} className="flex flex-col rounded-lg w-48 border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                                <img className="rounded-lg h-[6.75rem] object-cover border border-gray-200 dark:border-gray-700" src={parse(v.fotoRumah)[0]} alt="" />
-                                <div className="flex flex-col p-3">
-                                    <div className="flex flex-row pt-1">
-                                        <Badge size="xs" color={v.jenisKost == "putra" ? "info" : "indigo"}>
-                                            {v.jenisKost}
-                                        </Badge>
-                                        <Badge size="xs" className="ml-1" color={v.jenisKost == "putra" ? "info" : "indigo"}>
-                                            {"Tersedia: " + parse(v.totalKamar).total}
-                                        </Badge>
-                                    </div>
-                                    <p className="text-md line-clamp-2 font-semibold mt-1 truncate">{v.nama}</p>
-                                    <p className="text-xs line-clamp-2">
-                                        {parse(v.fasilitas)
-                                            .filter((v) => v.status == true)
-                                            .map((v, i) => v.name)
-                                            .join(", ")}
-                                    </p>
-                                    <div className="mt-1">
-                                        <Rating>
-                                            <RatingStar />
-                                            <RatingStar />
-                                            <RatingStar />
-                                            <RatingStar />
-                                            <RatingStar filled={false} />
-                                        </Rating>
+                            <Link key={i} href={"/kost/" + v.id}>
+                                <div className="flex flex-col rounded-lg w-48 border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+                                    <img className="rounded-lg h-[6.75rem] object-cover border border-gray-200 dark:border-gray-700" src={parse(v.fotoRumah)[0]} alt="" />
+                                    <div className="flex flex-col p-3">
+                                        <div className="flex flex-row pt-1">
+                                            <Badge size="xs" color={v.jenisKost == "putra" ? "info" : "indigo"}>
+                                                {v.jenisKost}
+                                            </Badge>
+                                            <Badge size="xs" className="ml-1" color={v.jenisKost == "putra" ? "info" : "indigo"}>
+                                                {"Tersedia: " + parse(v.totalKamar).total}
+                                            </Badge>
+                                        </div>
+                                        <p className="text-md line-clamp-2 font-semibold mt-1 truncate">{v.nama}</p>
+                                        <p className="text-xs line-clamp-2">
+                                            {parse(v.fasilitas)
+                                                .filter((v) => v.status == true)
+                                                .map((v, i) => v.name)
+                                                .join(", ")}
+                                        </p>
+                                        <div className="mt-1">
+                                            <Rating>
+                                                <RatingStar />
+                                                <RatingStar />
+                                                <RatingStar />
+                                                <RatingStar />
+                                                <RatingStar filled={false} />
+                                            </Rating>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         );
                     })}
                 </div>
@@ -93,36 +90,38 @@ function Content() {
                         if (!parse(v.fotoRumah)?.[0]) return;
                         if (v.jenisKost == "putra") return;
                         return (
-                            <div key={i} className="flex flex-col rounded-lg w-48 border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                                <img className="rounded-lg h-[6.75rem] object-cover border border-gray-200 dark:border-gray-700" src={parse(v.fotoRumah)[0]} alt="" />
-                                <div className="flex flex-col p-3">
-                                    <div className="flex flex-row pt-1">
-                                        <Badge size="xs" color={v.jenisKost == "putra" ? "info" : "indigo"}>
-                                            {v.jenisKost}
-                                        </Badge>
-                                        <Badge size="xs" className="ml-1" color={v.jenisKost == "putra" ? "info" : "indigo"}>
-                                            {"Tersedia: " + parse(v.totalKamar).total}
-                                        </Badge>
+                            <Link key={i} href={"/kost/" + v.id}>
+                                <div className="flex flex-col rounded-lg w-48 border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+                                    <img className="rounded-lg h-[6.75rem] object-cover border border-gray-200 dark:border-gray-700" src={parse(v.fotoRumah)[0]} alt="" />
+                                    <div className="flex flex-col p-3">
+                                        <div className="flex flex-row pt-1">
+                                            <Badge size="xs" color={v.jenisKost == "putra" ? "info" : "indigo"}>
+                                                {v.jenisKost}
+                                            </Badge>
+                                            <Badge size="xs" className="ml-1" color={v.jenisKost == "putra" ? "info" : "indigo"}>
+                                                {"Tersedia: " + parse(v.totalKamar).total}
+                                            </Badge>
+                                        </div>
+                                        <p className="text-md line-clamp-1 font-semibold mt-1 truncate">{v.nama}</p>
+                                        <p className="text-xs line-clamp-2">
+                                            {parse(v.fasilitas)
+                                                .filter((v) => v.status == true)
+                                                .map((v, i) => v.name)
+                                                .join(", ")}
+                                        </p>
+                                        <div className="mt-1">
+                                            <Rating>
+                                                <RatingStar />
+                                                <RatingStar />
+                                                <RatingStar />
+                                                <RatingStar />
+                                                <RatingStar filled={false} />
+                                            </Rating>
+                                        </div>
+                                        <p className="text-[0.60rem] mt-1 text-right">{parse(v.alamat).kabupaten}</p>
                                     </div>
-                                    <p className="text-md line-clamp-1 font-semibold mt-1 truncate">{v.nama}</p>
-                                    <p className="text-xs line-clamp-2">
-                                        {parse(v.fasilitas)
-                                            .filter((v) => v.status == true)
-                                            .map((v, i) => v.name)
-                                            .join(", ")}
-                                    </p>
-                                    <div className="mt-1">
-                                        <Rating>
-                                            <RatingStar />
-                                            <RatingStar />
-                                            <RatingStar />
-                                            <RatingStar />
-                                            <RatingStar filled={false} />
-                                        </Rating>
-                                    </div>
-                                    <p className="text-[0.60rem] mt-1 text-right">{parse(v.alamat).kabupaten}</p>
                                 </div>
-                            </div>
+                            </Link>
                         );
                     })}
                 </div>
