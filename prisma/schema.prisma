@@ -10,7 +10,7 @@ datasource db {
 model User {
   id        Int        @id @default(autoincrement())
   nama      String?    @db.VarChar(50)
-  jk        User_jk?
+  jk        String?
   pekerjaan String?    @db.VarChar(50)
   status    String?    @db.VarChar(50)
   alamat    String?    @db.VarChar(50)
@@ -36,11 +36,6 @@ model Kos {
   fasilitas      String? @db.Text
   totalKamar     String? @db.Text
   harga          String? @db.Text
-}
-
-enum User_jk {
-  L
-  P
 }
 
 enum User_role {
