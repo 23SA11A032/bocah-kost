@@ -21,8 +21,6 @@ export default function Kosts({ params: { id } }) {
 
     useEffect(() => {
         getKost(Number(id)).then((res) => {
-            res.fotoRumah = JSON.parse(res.fotoRumah);
-            res.alamat = JSON.parse(res.alamat);
             setKos(res);
         });
     }, []);
@@ -40,7 +38,11 @@ export default function Kosts({ params: { id } }) {
                                 return (
                                     <SwiperSlide key={i}>
                                         <div className="flex justify-center items-center h-56 md:h-60 lg:h-64 xl:h-96">
-                                            <img src={v} alt="" className="object-fill rounded-lg" />
+                                            <img
+                                                src={v}
+                                                alt=""
+                                                className="object-fill rounded-lg"
+                                            />
                                         </div>
                                     </SwiperSlide>
                                 );

@@ -1,14 +1,12 @@
+"use client";
+
+import { logout } from "@/lib/utils";
 import { Button } from "flowbite-react";
-import { BiLogOut } from "react-icons/bi";
 
 export default function Logout() {
-    function clearUser() {
-        localStorage.removeItem("user");
-        window.location.href = "/";
+    function handleLogout() {
+        logout();
+        window.location.reload();
     }
-    return (
-        <Button onClick={clearUser}>
-            Logout
-        </Button>
-    );
+    return <Button onClick={handleLogout}>Logout</Button>;
 }

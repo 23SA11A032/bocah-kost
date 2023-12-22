@@ -18,24 +18,44 @@ export default function Navigation() {
 
     return (
         <>
-            <div className="fixed bottom-0 p-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-t container mx-auto border-gray-200 dark:border-gray-700 flex items-center justify-between rounded-lg">
+            <div className="sticky bottom-0 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-t container mx-auto border-gray-200 dark:border-gray-700 flex items-center justify-between rounded-lg">
                 <div className="flex flex-row justify-between items-center container mx-auto lg:px-28 xl:px-56">
-                    <Link href={"/"} className={`${path == "/" && "bg-gray-400/50"} p-3 px-6 rounded-lg`}>
-                        <ImHome size={22} />
+                    <Link
+                        href={"/"}
+                        className={`${
+                            path == "/" && "bg-gray-400/50"
+                        } p-3 px-6 rounded-lg`}
+                    >
+                        <ImHome size={34} />
                     </Link>
 
-                    <Link href={"/list"} className={`${path == "/list" && "bg-gray-400/50"} p-3 px-6 rounded-lg`}>
-                        <CgList size={22} />
+                    <Link
+                        href={"/list"}
+                        className={`${
+                            path == "/list" && "bg-gray-400/50"
+                        } p-3 px-6 rounded-lg`}
+                    >
+                        <CgList size={34} />
                     </Link>
 
                     {isKos && (
-                        <Link href={"/kos"} className={`${path.startsWith("/kos") && "bg-gray-400/50"} p-3 px-6 rounded-lg`}>
-                            <FaGear size={22} />
+                        <Link
+                            href={"/kos"}
+                            className={`${
+                                path.startsWith("/kos") && "bg-gray-400/50"
+                            } p-3 px-6 rounded-lg`}
+                        >
+                            <FaGear size={34} />
                         </Link>
                     )}
 
-                    <Link href={"/profile"} className={`${path == "/profile" && "bg-gray-400/50"} p-3 px-6 rounded-lg`}>
-                        <CgProfile size={22} />
+                    <Link
+                        href={"/profile"}
+                        className={`${
+                            path == "/profile" && "bg-gray-400/50"
+                        } p-3 px-6 rounded-lg`}
+                    >
+                        <CgProfile size={34} />
                     </Link>
                 </div>
             </div>

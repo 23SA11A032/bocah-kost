@@ -127,7 +127,6 @@ export default function Pengaturan() {
                 }
             }
 
-            console.log(res);
             setData({ ...res });
         } catch (error) {
             console.log(error);

@@ -29,11 +29,10 @@ export default function Login() {
         setSuccess("");
         setError("");
         try {
-            var { data } = await axios.post("/api/auth/login", { email, password });
+            var { data } = await axios.post("/api/login", { email, password });
 
             setSuccess("Selamat Datang " + data.nama);
             await new Promise((r) => setTimeout(r, 1700));
-            localStorage.setItem("user", JSON.stringify(data));
             window.location.reload();
         } catch (error) {
             console.log(error);

@@ -22,10 +22,11 @@ export default function Home() {
     ];
 
     return (
-        <div className="container mx-auto flex flex-col">
+        <div className="container mx-auto flex flex-col min-h-screen">
             <Header />
             <Carausel images={images} />
             <Content />
+            <div className="flex-1"></div>
             <Navigation />
         </div>
     );
@@ -39,7 +40,7 @@ function Content() {
     }, []);
 
     return (
-        <div className="px-3 mb-20">
+        <div className="px-3 pb-4">
             <p className="text-xl font-semibold mb-4">Putra</p>
             <div className="overflow-auto">
                 <div className="grid grid-flow-col gap-4">
@@ -49,17 +50,39 @@ function Content() {
                         return (
                             <Link key={i} href={"/kost/" + v.id}>
                                 <div className="flex flex-col rounded-lg w-48 border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                                    <img className="rounded-lg h-[6.75rem] object-cover border border-gray-200 dark:border-gray-700" src={parse(v.fotoRumah)[0]} alt="" />
+                                    <img
+                                        className="rounded-lg h-[6.75rem] object-cover border border-gray-200 dark:border-gray-700"
+                                        src={parse(v.fotoRumah)[0]}
+                                        alt=""
+                                    />
                                     <div className="flex flex-col p-3">
                                         <div className="flex flex-row pt-1">
-                                            <Badge size="xs" color={v.jenisKost == "putra" ? "info" : "indigo"}>
+                                            <Badge
+                                                size="xs"
+                                                color={
+                                                    v.jenisKost == "putra"
+                                                        ? "info"
+                                                        : "indigo"
+                                                }
+                                            >
                                                 {v.jenisKost}
                                             </Badge>
-                                            <Badge size="xs" className="ml-1" color={v.jenisKost == "putra" ? "info" : "indigo"}>
-                                                {"Tersedia: " + parse(v.totalKamar).total}
+                                            <Badge
+                                                size="xs"
+                                                className="ml-1"
+                                                color={
+                                                    v.jenisKost == "putra"
+                                                        ? "info"
+                                                        : "indigo"
+                                                }
+                                            >
+                                                {"Tersedia: " +
+                                                    parse(v.totalKamar).total}
                                             </Badge>
                                         </div>
-                                        <p className="text-md line-clamp-2 font-semibold mt-1 truncate">{v.nama}</p>
+                                        <p className="text-md line-clamp-2 font-semibold mt-1 truncate">
+                                            {v.nama}
+                                        </p>
                                         <p className="text-xs line-clamp-2">
                                             {parse(v.fasilitas)
                                                 .filter((v) => v.status == true)
@@ -92,17 +115,39 @@ function Content() {
                         return (
                             <Link key={i} href={"/kost/" + v.id}>
                                 <div className="flex flex-col rounded-lg w-48 border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                                    <img className="rounded-lg h-[6.75rem] object-cover border border-gray-200 dark:border-gray-700" src={parse(v.fotoRumah)[0]} alt="" />
+                                    <img
+                                        className="rounded-lg h-[6.75rem] object-cover border border-gray-200 dark:border-gray-700"
+                                        src={parse(v.fotoRumah)[0]}
+                                        alt=""
+                                    />
                                     <div className="flex flex-col p-3">
                                         <div className="flex flex-row pt-1">
-                                            <Badge size="xs" color={v.jenisKost == "putra" ? "info" : "indigo"}>
+                                            <Badge
+                                                size="xs"
+                                                color={
+                                                    v.jenisKost == "putra"
+                                                        ? "info"
+                                                        : "indigo"
+                                                }
+                                            >
                                                 {v.jenisKost}
                                             </Badge>
-                                            <Badge size="xs" className="ml-1" color={v.jenisKost == "putra" ? "info" : "indigo"}>
-                                                {"Tersedia: " + parse(v.totalKamar).total}
+                                            <Badge
+                                                size="xs"
+                                                className="ml-1"
+                                                color={
+                                                    v.jenisKost == "putra"
+                                                        ? "info"
+                                                        : "indigo"
+                                                }
+                                            >
+                                                {"Tersedia: " +
+                                                    parse(v.totalKamar).total}
                                             </Badge>
                                         </div>
-                                        <p className="text-md line-clamp-1 font-semibold mt-1 truncate">{v.nama}</p>
+                                        <p className="text-md line-clamp-1 font-semibold mt-1 truncate">
+                                            {v.nama}
+                                        </p>
                                         <p className="text-xs line-clamp-2">
                                             {parse(v.fasilitas)
                                                 .filter((v) => v.status == true)
@@ -118,7 +163,9 @@ function Content() {
                                                 <RatingStar filled={false} />
                                             </Rating>
                                         </div>
-                                        <p className="text-[0.60rem] mt-1 text-right">{parse(v.alamat).kabupaten}</p>
+                                        <p className="text-[0.60rem] mt-1 text-right">
+                                            {parse(v.alamat).kabupaten}
+                                        </p>
                                     </div>
                                 </div>
                             </Link>

@@ -14,9 +14,23 @@ function getId() {
     }
 }
 
+export async function logout() {
+    cookies().delete("token");
+}
+
 export async function getKosts() {
     var kos = await db.kos.findMany();
     return kos;
+}
+
+export async function getKost(id) {
+    try {
+        var kos = await db.kos.findUnique({ where: { id } });
+        kos = parseData(kos);
+        return kos;
+    } catch (error) {
+        return null;
+    }
 }
 
 export async function getUser() {
@@ -46,7 +60,11 @@ export async function updateUser(data) {
 
 export async function getAdmin() {
     try {
-        var admin = await db.admin.upsert({ where: { id: 1 }, create: {}, update: {} });
+        var admin = await db.admin.upsert({
+            where: { id: 1 },
+            create: {},
+            update: {},
+        });
         admin = parseData(admin);
         return admin;
     } catch (error) {
@@ -58,7 +76,11 @@ export async function getAdmin() {
 export async function updateAdmin(data) {
     try {
         var admin = stringifyData(data);
-        admin = await db.admin.upsert({ where: { id: 1 }, create: { ...admin }, update: { ...admin } });
+        admin = await db.admin.upsert({
+            where: { id: 1 },
+            create: { ...admin },
+            update: { ...admin },
+        });
         admin = parseData(data);
         return admin;
     } catch (error) {
@@ -80,7 +102,9 @@ export async function imgToUrl(file, cb) {
             },
         } = await axios.post("https://api.imgbb.com/1/upload", formData, {
             onUploadProgress: (progressEvent) => {
-                let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                let percentCompleted = Math.round(
+                    (progressEvent.loaded * 100) / progressEvent.total
+                );
                 cb(percentCompleted);
             },
         });
@@ -110,7 +134,8 @@ function parseData(data) {
         Object.entries(data).map((v) => {
             try {
                 const parsed = JSON.parse(v[1]);
-                if (isObject(parsed) || Array.isArray(parsed)) return [v[0], parsed];
+                if (isObject(parsed) || Array.isArray(parsed))
+                    return [v[0], parsed];
             } catch (e) {
                 // not a JSON string
             }

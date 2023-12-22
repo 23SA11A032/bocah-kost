@@ -15,6 +15,7 @@ export async function POST(request) {
         if (user) {
             return Response.json({ status: false, message: "Email sudah terdaftar!" }, { status: 403 });
         }
+        body.password = jwt.sign(body.password, process.env.JWT_SECRET);
         let newUser = await User.create({ data: body });
         let token = jwt.sign(newUser, process.env.JWT_SECRET);
         cookies().set("token", token);
