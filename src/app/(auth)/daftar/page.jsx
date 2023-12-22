@@ -12,6 +12,7 @@ import { useState } from "react";
 import { HiInformationCircle } from "react-icons/hi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getUser } from "@/lib/utils";
 
 const schema = yup.object({
     nama: yup.string().min(5).required().label("Nama"),

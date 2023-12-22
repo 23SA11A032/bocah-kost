@@ -18,6 +18,7 @@ model User {
   email     String?    @unique @db.VarChar(50)
   password  String?    @db.VarChar(255)
   role      User_role?
+  image     String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
 }
@@ -36,6 +37,12 @@ model Kos {
   fasilitas      String? @db.Text
   totalKamar     String? @db.Text
   harga          String? @db.Text
+}
+
+model Admin {
+  id     Int     @id @default(autoincrement())
+  banner String? @db.Text
+  logo   String?
 }
 
 enum User_role {

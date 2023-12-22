@@ -17,7 +17,6 @@
   "devDependencies": {
     "@hookform/resolvers": "^3.3.2",
     "@prisma/client": "^5.7.0",
-    "@tailwindcss/line-clamp": "^0.4.4",
     "autoprefixer": "^10.0.1",
     "axios": "^1.6.2",
     "flowbite": "^2.2.0",

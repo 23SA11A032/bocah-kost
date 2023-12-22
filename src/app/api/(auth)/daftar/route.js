@@ -15,10 +15,9 @@ export async function POST(request) {
         if (user) {
             return Response.json({ status: false, message: "Email sudah terdaftar!" }, { status: 403 });
         }
-        body.password = jwt.sign(body.password, process.env.JWT_SECRET);
         let newUser = await User.create({ data: body });
-        body.id = newUser.id;
-        cookies().set("user", body);
+        let token = jwt.sign(newUser, process.env.JWT_SECRET);
+        cookies().set("token", token);
         return Response.json({ status: true, message: "Berhasil mendaftarkan akun" }, { status: 201 });
     } catch (error) {
         console.log(error);
