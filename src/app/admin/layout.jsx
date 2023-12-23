@@ -6,11 +6,18 @@ import { useEffect, useState } from "react";
 import { HiArrowCircleLeft, HiArrowSmRight, HiChartPie, HiCog, HiInbox, HiOutlineShoppingCart, HiShoppingBag, HiTable, HiUser, HiViewBoards } from "react-icons/hi";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { getUser } from '@/lib/utils'
+import { getUser } from "@/lib/utils";
 
 export default function Admin({ children }) {
     const [open, setOpen] = useState(false);
     const path = usePathname();
+    const router = useRouter();
+
+    useEffect(() => {
+        getUser().then((res) => {
+            if (!res) return router.push("/");
+        });
+    }, []);
 
     return (
         <>

@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import db from "@/lib/db";
 
 /**
  * @param {Request} request
@@ -8,8 +6,8 @@ const prisma = new PrismaClient();
 export async function GET(request, { params }) {
     try {
         var id = Number(params.id);
-        var kos = await prisma.kos.upsert({ where: { id: id }, update: {}, create: {} });
-        return Response.json(kos)
+        var kos = await db.kos.upsert({ where: { id: id }, update: {}, create: {} });
+        return Response.json(kos);
     } catch (error) {
         return new Response(error, { status: 500 });
     }
@@ -22,7 +20,7 @@ export async function POST(request, { params: { id } }) {
     try {
         id = Number(id);
         var body = await request.json();
-        var kos = await prisma.kos.upsert({ where: { id: id }, update: body, create: body });
+        var kos = await db.kos.upsert({ where: { id: id }, update: body, create: body });
         return Response.json(kos);
     } catch (error) {
         return new Response(error, { status: 500 });

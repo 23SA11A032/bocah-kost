@@ -3,6 +3,15 @@
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import db from "./db";
+const { cpu, mem, os } = require("node-os-utils");
+
+export async function getinfo() {
+    return {
+        cpu: Object.fromEntries(await Promise.all(Object.keys(cpu).map(async (v) => [v, await cpu[v]()]))),
+        mem: Object.fromEntries(await Promise.all(Object.keys(mem).map(async (v) => [v, await mem[v]()]))),
+        os: Object.fromEntries(await Promise.all(Object.keys(os).map(async (v) => [v, await os[v]()]))),
+    };
+}
 
 function getId() {
     try {
@@ -102,9 +111,7 @@ export async function imgToUrl(file, cb) {
             },
         } = await axios.post("https://api.imgbb.com/1/upload", formData, {
             onUploadProgress: (progressEvent) => {
-                let percentCompleted = Math.round(
-                    (progressEvent.loaded * 100) / progressEvent.total
-                );
+                let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                 cb(percentCompleted);
             },
         });
@@ -134,8 +141,7 @@ function parseData(data) {
         Object.entries(data).map((v) => {
             try {
                 const parsed = JSON.parse(v[1]);
-                if (isObject(parsed) || Array.isArray(parsed))
-                    return [v[0], parsed];
+                if (isObject(parsed) || Array.isArray(parsed)) return [v[0], parsed];
             } catch (e) {
                 // not a JSON string
             }
@@ -143,3 +149,9 @@ function parseData(data) {
         })
     );
 }
+
+export const verifyJWT = (token, secret) => {
+    return new Promise((resolve) => {
+        resolve(verify(token, secret));
+    });
+};
