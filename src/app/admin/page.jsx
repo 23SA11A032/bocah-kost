@@ -48,7 +48,7 @@ export default function Kos() {
                         <div className="flex flex-col align-top">
                             <p className="font-semibold text-lg">OS</p>
                             <p className="text-3xl font-bold">
-                                {info?.os?.type} {info?.os?.arch}
+                                {info?.os?.type} {info?.os?.oos} {info?.os?.arch}
                             </p>
                             <p>{info?.os?.hostname}</p>
                         </div>

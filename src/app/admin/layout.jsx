@@ -7,6 +7,7 @@ import { HiArrowCircleLeft, HiArrowSmRight, HiChartPie, HiCog, HiInbox, HiOutlin
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getUser } from "@/lib/utils";
+import { GrDocumentVerified } from "react-icons/gr";
 
 export default function Admin({ children }) {
     const [open, setOpen] = useState(false);
@@ -39,7 +40,7 @@ export default function Admin({ children }) {
                         )}
                     </button>
                 </Header>
-                <div className="flex flex-row flex-1">
+                <div className="flex flex-row flex-1 w-screen">
                     <div className="relative">
                         <Sidebar
                             className={`absolute ${!open && "-translate-x-full"} sm:translate-x-0 duration-500 overflow-auto sm:static z-10 border-gray-200 dark:border-gray-600 rounded-r-lg border-r`}
@@ -53,6 +54,14 @@ export default function Admin({ children }) {
                                     <Sidebar.Item className={path == "/admin/admin-pengaturan" && "bg-gray-100 dark:bg-gray-700"} as={Link} href={"/admin/admin-pengaturan"} icon={HiCog}>
                                         Pengaturan Admin
                                     </Sidebar.Item>
+                                    <Sidebar.Item
+                                        className={path == "/admin/admin-verifikasi-kos" && "bg-gray-100 dark:bg-gray-700"}
+                                        as={Link}
+                                        href={"/admin/admin-verifikasi-kos"}
+                                        icon={GrDocumentVerified}
+                                    >
+                                        Verifikasi Kos
+                                    </Sidebar.Item>
                                 </Sidebar.ItemGroup>
                                 <Sidebar.ItemGroup>
                                     <Sidebar.Item icon={HiArrowCircleLeft} as={Link} href={"/"}>
@@ -63,7 +72,7 @@ export default function Admin({ children }) {
                         </Sidebar>
                     </div>
 
-                    <div className="flex-1 flex flex-col">{children}</div>
+                    <div className="flex-1">{children}</div>
                 </div>
             </div>
         </>

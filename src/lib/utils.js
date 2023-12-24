@@ -51,6 +51,15 @@ export async function getUser() {
     }
 }
 
+export async function getUsers() {
+    try {
+        var user = await db.user.findMany({});
+        return user;
+    } catch (error) {
+        return null;
+    }
+}
+
 /**
  *
  * @param {*} id
