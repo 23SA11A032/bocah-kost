@@ -66,9 +66,9 @@ export async function getUsers() {
  * @param {import("@prisma/client").User} data
  * @returns
  */
-export async function updateUser(data) {
+export async function updateUser(id, data) {
     try {
-        var kos = await db.user.update({ where: { id: getId() }, data });
+        var kos = await db.user.update({ where: { id: id }, data });
         return kos;
     } catch (error) {
         console.log(error);

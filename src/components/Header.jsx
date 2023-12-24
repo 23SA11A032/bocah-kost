@@ -4,15 +4,17 @@ import { Button, DarkThemeToggle, Flowbite } from "flowbite-react";
 import Login from "./Login";
 import { useEffect, useState } from "react";
 import Logout from "./Logout";
-import { getUser } from "@/lib/utils";
+import { getAdmin, getUser } from "@/lib/utils";
 
 export default function Header({ children }) {
     const [user, setUser] = useState(false);
+    const [logo, setLogo] = useState("");
 
     useEffect(() => {
         getUser().then((res) => {
             setUser(res);
         });
+        getAdmin().then((r) => setLogo(r.logo));
     }, []);
 
     return (
@@ -20,7 +22,7 @@ export default function Header({ children }) {
             <div className="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between w-full mx-auto py-2.5 px-4 rounded-lg">
                 <div className="flex flex-row items-center gap-3 text-2xl font-semibold text-gray-900 dark:text-white">
                     {children}
-                    <Logo />
+                    <img src={logo} alt="" className="w-9 h-9 rounded-lg" />
                     <p>
                         BOCAH<span className="text-red-500">KOS</span>
                     </p>

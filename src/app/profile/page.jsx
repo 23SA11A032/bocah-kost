@@ -29,7 +29,7 @@ export default function Profile(req) {
         let file = e.target.files[0];
         var res = await imgToUrl(file, setPercent);
         if (res) {
-            await updateUser({ image: res });
+            await updateUser(user.id, { image: res });
             setUser((p) => ({ ...p, image: res }));
         }
         setPercent(0);

@@ -1,7 +1,7 @@
 "use client";
 
 import Carausel from "@/components/Carousel";
-import { getKosts } from "@/lib/utils";
+import { getAdmin, getKosts } from "@/lib/utils";
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import { Badge, Rating, RatingStar } from "flowbite-react";
@@ -11,15 +11,13 @@ import Link from "next/link";
 const { parse } = JSON;
 
 export default function Home() {
-    var images = [
-        "https://static.mamikos.com/uploads/cache/data/event/2023-10-26/yz5WBfq1-540x720.jpg",
-        "https://static.mamikos.com/uploads/cache/data/event/2023-11-14/lpSj9r0O-540x720.jpg",
-        "https://static.mamikos.com/uploads/cache/data/event/2023-05-30/vP4HjDLB-540x720.jpg",
-        "https://static.mamikos.com/uploads/cache/data/event/2023-07-04/VmQFAmbE-540x720.jpg",
-        "https://static.mamikos.com/uploads/cache/data/event/2023-08-02/otjkenCs-540x720.jpg",
-        "https://static.mamikos.com/uploads/cache/data/event/2022-03-25/VTcV35Br-540x720.jpg",
-        "https://static.mamikos.com/uploads/cache/data/event/2023-05-16/hkqFTkBN-540x720.jpg",
-    ];
+    const [images, setimages] = useState([]);
+
+    useEffect(() => {
+        getAdmin().then((r) => {
+            setimages([...r.banner]);
+        });
+    }, []);
 
     return (
         <div className="container mx-auto flex flex-col min-h-screen">

@@ -24,31 +24,46 @@ export default function Kos() {
                     <Card className="w-full h-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-col align-top">
                             <p className="font-semibold text-lg">CPU</p>
-                            <p className="text-3xl font-bold">{info?.cpu?.usage} %</p>
-                            <p className="truncate">{info?.cpu?.model}</p>
+                            <p className="text-3xl font-bold overflow-x-auto whitespace-nowrap">
+                                {info?.cpu?.usage} %
+                            </p>
+                            <p className="overflow-x-auto whitespace-nowrap">
+                                {info?.cpu?.model}
+                            </p>
                         </div>
                     </Card>
                     <Card className="w-full h-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-col align-top">
-                            <p className="font-semibold text-lg">MEMORY USAGE</p>
-                            <p className="text-3xl font-bold">
-                                {info?.mem?.used?.usedMemMb} MB ({info?.mem?.info?.usedMemPercentage} %)
+                            <p className="font-semibold text-lg">
+                                MEMORY USAGE
                             </p>
-                            <p>Total memory: {info?.mem?.used?.totalMemMb} MB</p>
+                            <p className="text-3xl font-bold overflow-x-auto whitespace-nowrap">
+                                {info?.mem?.used?.usedMemMb} MB (
+                                {info?.mem?.info?.usedMemPercentage} %)
+                            </p>
+                            <p>
+                                Total memory: {info?.mem?.used?.totalMemMb} MB
+                            </p>
                         </div>
                     </Card>
                     <Card className="w-full h-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-col align-top">
                             <p className="font-semibold text-lg">FREE MEMORY</p>
-                            <p className="text-3xl font-bold">{info?.mem?.free?.freeMemMb} MB</p>
-                            <p>Total free memory: {info?.mem?.info?.freeMemPercentage} %</p>
+                            <p className="text-3xl font-bold overflow-x-auto whitespace-nowrap">
+                                {info?.mem?.free?.freeMemMb} MB
+                            </p>
+                            <p>
+                                Total free memory:{" "}
+                                {info?.mem?.info?.freeMemPercentage} %
+                            </p>
                         </div>
                     </Card>
                     <Card className="w-full h-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-col align-top">
                             <p className="font-semibold text-lg">OS</p>
-                            <p className="text-3xl font-bold">
-                                {info?.os?.type} {info?.os?.oos} {info?.os?.arch}
+                            <p className="text-3xl font-bold overflow-x-auto whitespace-nowrap">
+                                {info?.os?.type} {info?.os?.oos}{" "}
+                                {info?.os?.arch}
                             </p>
                             <p>{info?.os?.hostname}</p>
                         </div>
@@ -56,7 +71,9 @@ export default function Kos() {
                     <Card className="w-full h-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-col align-top">
                             <p className="font-semibold text-lg">UPTIME</p>
-                            <p className="text-3xl font-bold">{formatUptime(info?.os?.uptime)}</p>
+                            <p className="text-3xl font-bold overflow-x-auto whitespace-nowrap">
+                                {formatUptime(info?.os?.uptime)}
+                            </p>
                             <p>{info?.os?.uptime}</p>
                         </div>
                     </Card>
