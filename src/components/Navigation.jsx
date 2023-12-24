@@ -10,10 +10,14 @@ import { getUser } from "@/lib/utils";
 
 export default function Navigation() {
     const [isKos, setIsKos] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const path = usePathname();
 
     useEffect(() => {
-        getUser().then((res) => setIsKos(res?.role == "kos"));
+        getUser().then((res) => {
+            setIsKos(res?.role == "kos");
+            setIsAdmin(res?.role == "admin");
+        });
     }, []);
 
     return (
@@ -43,6 +47,17 @@ export default function Navigation() {
                             href={"/kos"}
                             className={`${
                                 path.startsWith("/kos") && "bg-gray-400/50"
+                            } p-3 px-6 rounded-lg`}
+                        >
+                            <FaGear size={34} />
+                        </Link>
+                    )}
+
+                    {isAdmin && (
+                        <Link
+                            href={"/admin"}
+                            className={`${
+                                path.startsWith("/admin") && "bg-gray-400/50"
                             } p-3 px-6 rounded-lg`}
                         >
                             <FaGear size={34} />
