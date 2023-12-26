@@ -29,15 +29,32 @@ export async function logout() {
 
 export async function getKosts() {
     var kos = await db.kos.findMany();
+    kos = kos.map((v) => parseData(v));
     return kos;
 }
 
 export async function getKost(id) {
     try {
         var kos = await db.kos.findUnique({ where: { id } });
-        kos = parseData(kos);
+        kos = parseData(kos)
         return kos;
     } catch (error) {
+        return null;
+    }
+}
+
+export async function updateKost(id, data) {
+    try {
+        var kost = stringifyData(data);
+        kost = await db.kos.upsert({
+            where: { id: id },
+            create: { ...kost },
+            update: { ...kost },
+        });
+        kost = parseData(kost);
+        return kost;
+    } catch (error) {
+        console.log(error);
         return null;
     }
 }

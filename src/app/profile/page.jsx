@@ -17,13 +17,6 @@ export default function Profile(req) {
         });
     }, []);
 
-    if (!user) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <p className="text-2xl font-semibold">Kamu Belum Login!</p>
-            </div>
-        );
-    }
 
     const handleFile = async (e) => {
         let file = e.target.files[0];
@@ -38,7 +31,10 @@ export default function Profile(req) {
     return (
         <div className="container mx-auto min-h-screen flex flex-col">
             <Header />
-            <div className="flex flex-col items-center py-24">
+            {!user?.nama ? (
+                <div className="flex justify-center items-center flex-1">
+                    <p className="text-2xl font-semibold">Kamu Belum Login!</p>
+                </div>) : (<div className="flex flex-col items-center py-24">
                 <label
                     className="w-36 h-36 relative border rounded-full flex justify-center items-center"
                     htmlFor="poto"
@@ -71,9 +67,9 @@ export default function Profile(req) {
                     <p>{user.nama}</p>
                 </div>
                 <div className="text-xs p-1 border rounded-md">
-                    <p>{user.role == "kos" ? "Pemilik Kos" : "User Biasa"}</p>
+                        <p>{user.role == "kos" ? "Pemilik Kos" : user.role == "admin" ? "Admin" : "User Biasa"}</p>
                 </div>
-            </div>
+            </div>)}
             <div className={`flex-1`}></div>
             <Navigation />
         </div>

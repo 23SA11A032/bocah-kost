@@ -27,6 +27,7 @@ model User {
 model Kos {
   id             Int     @id @default(autoincrement())
   nama           String? @db.VarChar(255)
+  deskripsi      String? @db.Text
   jenisKost      String? @db.VarChar(255)
   peraturan      String? @db.Text
   peraturanLain  String? @db.VarChar(255)

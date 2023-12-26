@@ -19,7 +19,7 @@ export default function Kos() {
 
     return (
         <>
-            <div className="flex flex-col p-4 m-4 h-full rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <div className="overflow-auto flex flex-col p-4 m-4 h-full rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                 <div className="grid grid-cols-1 gap-2 items-stretch">
                     <Card className="w-full h-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                         <div className="flex flex-col align-top">

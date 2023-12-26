@@ -16,7 +16,9 @@ export default function Admin({ children }) {
 
     useEffect(() => {
         getUser().then((res) => {
-            if (!res) return router.push("/");
+            if (res?.role !== "admin") {
+                router.push("/");
+            }
         });
     }, []);
 
@@ -24,10 +26,7 @@ export default function Admin({ children }) {
         <>
             <div className="flex flex-col min-h-screen w-screen">
                 <Header>
-                    <button
-                        className="sm:hidden rounded-lg"
-                        onClick={() => setOpen((op) => !op)}
-                    >
+                    <button className="sm:hidden rounded-lg" onClick={() => setOpen((op) => !op)}>
                         {open ? (
                             <>
                                 <svg
@@ -38,11 +37,7 @@ export default function Admin({ children }) {
                                     stroke="currentColor"
                                     className="w-6 h-6 duration-500 rotate-90"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </>
                         ) : (
@@ -55,11 +50,7 @@ export default function Admin({ children }) {
                                     stroke="currentColor"
                                     className="w-6 h-6 duration-500 rotate-0"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
-                                    />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
                                 </svg>
                             </>
                         )}
@@ -75,47 +66,28 @@ export default function Admin({ children }) {
                         >
                             <Sidebar.Items>
                                 <Sidebar.ItemGroup>
-                                    <Sidebar.Item
-                                        className={
-                                            path == "/admin" &&
-                                            "bg-gray-100 dark:bg-gray-700"
-                                        }
-                                        as={Link}
-                                        href={"/admin"}
-                                        icon={HiChartPie}
-                                    >
+                                    <Sidebar.Item className={path == "/admin/admin" && "bg-gray-100 dark:bg-gray-700"} as={Link} href={"/admin/admin"} icon={HiChartPie}>
                                         Dashboard
                                     </Sidebar.Item>
                                     <Sidebar.Item
-                                        className={
-                                            path == "/admin/admin-pengaturan" &&
-                                            "bg-gray-100 dark:bg-gray-700"
-                                        }
+                                        className={path == "/admin/admin/admin-pengaturan" && "bg-gray-100 dark:bg-gray-700"}
                                         as={Link}
-                                        href={"/admin/admin-pengaturan"}
+                                        href={"/admin/admin/admin-pengaturan"}
                                         icon={HiCog}
                                     >
                                         Pengaturan Admin
                                     </Sidebar.Item>
                                     <Sidebar.Item
-                                        className={
-                                            path ==
-                                                "/admin/admin-verifikasi-kos" &&
-                                            "bg-gray-100 dark:bg-gray-700"
-                                        }
+                                        className={path == "/admin/admin/admin-verifikasi-kos" && "bg-gray-100 dark:bg-gray-700"}
                                         as={Link}
-                                        href={"/admin/admin-verifikasi-kos"}
+                                        href={"/admin/admin/admin-verifikasi-kos"}
                                         icon={GrDocumentVerified}
                                     >
                                         Verifikasi Kos
                                     </Sidebar.Item>
                                 </Sidebar.ItemGroup>
                                 <Sidebar.ItemGroup>
-                                    <Sidebar.Item
-                                        icon={HiArrowCircleLeft}
-                                        as={Link}
-                                        href={"/"}
-                                    >
+                                    <Sidebar.Item icon={HiArrowCircleLeft} as={Link} href={"/"}>
                                         Keluar
                                     </Sidebar.Item>
                                 </Sidebar.ItemGroup>
@@ -123,7 +95,7 @@ export default function Admin({ children }) {
                         </Sidebar>
                     </div>
 
-                    <div className="flex-1 overflow-x-auto">{children}</div>
+                    <div className="flex-1 w-full">{children}</div>
                 </div>
             </div>
         </>
