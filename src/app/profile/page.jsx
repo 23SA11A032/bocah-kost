@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HiOutlineAdjustments, HiPencil } from "react-icons/hi";
+import { TiHomeOutline } from "react-icons/ti";
 
 export default function Profile(req) {
     const [user, setUser] = useState({});
@@ -42,31 +43,25 @@ export default function Profile(req) {
                 <div className="flex flex-col items-center py-24">
                     <label className="w-36 h-36 relative border rounded-full flex justify-center items-center" htmlFor="poto">
                         {percent !== 0 && <p className="font-semibold">{percent}%</p>}
-                        {percent === 0 && (
-                            <img
-                                src={user?.image || "https://pbs.twimg.com/profile_images/1675221784847687689/le-nIcDw_400x400.jpg"}
-                                className="rounded-full object-cover"
-                                alt=""
-                            />
-                        )}
+                        {percent === 0 && <img src={user?.image || "https://pbs.twimg.com/profile_images/1675221784847687689/le-nIcDw_400x400.jpg"} className="rounded-full object-cover" alt="" />}
                         <input type="file" id="poto" className="absolute hidden" onChange={handleFile} />
                         <HiPencil className="absolute -right-1 -bottom-1" size={24} />
                     </label>
                     <div className="text-lg font-semibold pt-2">
                         <p>{user.nama}</p>
                     </div>
-                    <div className="text-xs p-1 border rounded-md">
+                    <div className="text-xs p-1 border rounded-md mb-7">
                         <p>{user.role == "kos" ? "Pemilik Kos" : user.role == "admin" ? "Admin" : "User Biasa"}</p>
+                    </div>
+                    <div className="w-full max-w-sm md:max-w-md mx-auto">
+                        <ListGroup className="">
+                            <ListGroup.Item icon={() => <TiHomeOutline size={32} className="fill-gray-400 dark:fill-gray-400" />} onClick={() => router.push("/kost/my")}>
+                                <p className="text-lg p-1 px-2 text-gray-500 dark:text-gray-400">My Kost</p>
+                            </ListGroup.Item>
+                        </ListGroup>
                     </div>
                 </div>
             )}
-            <div className="w-full max-w-sm md:max-w-md mx-auto">
-                <ListGroup className="">
-                    <ListGroup.Item icon={() => <HiOutlineAdjustments size={32} />} onClick={() => router.push("/kost/my")}>
-                        <p className="text-lg p-1 px-2">My Kost</p>
-                    </ListGroup.Item>
-                </ListGroup>
-            </div>
             <div className={`flex-1`}></div>
             <Navigation />
         </div>

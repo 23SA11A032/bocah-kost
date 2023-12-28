@@ -22,23 +22,7 @@ model User {
   isVerified Boolean?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now())
-}
-
-model Kos {
-  id             Int     @id @default(autoincrement())
-  nama           String? @db.VarChar(255)
-  deskripsi      String? @db.Text
-  jenisKost      String? @db.VarChar(255)
-  peraturan      String? @db.Text
-  peraturanLain  String? @db.VarChar(255)
-  alamat         String? @db.Text
-  fotoRumah      String? @db.Text
-  fotoKamar      String? @db.Text
-  fotoKamarMandi String? @db.Text
-  fotoFasilitas  String? @db.Text
-  fasilitas      String? @db.Text
-  totalKamar     String? @db.Text
-  harga          String? @db.Text
+  Checkout   Checkout?
 }
 
 model Admin {
@@ -47,8 +31,35 @@ model Admin {
   logo   String?
 }
 
+model Checkout {
+  id     Int     @id @default(autoincrement())
+  kostId Int     @unique
+  kost   Kost    @relation(fields: [kostId], references: [id])
+  userId Int     @unique
+  user   User    @relation(fields: [userId], references: [id])
+  isDone Boolean @default(false)
+}
+
+model Kost {
+  id             Int       @id @default(autoincrement())
+  nama           String?   @db.VarChar(255)
+  deskripsi      String?   @db.Text
+  jenisKost      String?   @db.VarChar(255)
+  peraturan      String?   @db.Text
+  peraturanLain  String?   @db.VarChar(255)
+  alamat         String?   @db.Text
+  fotoRumah      String?   @db.Text
+  fotoKamar      String?   @db.Text
+  fotoKamarMandi String?   @db.Text
+  fotoFasilitas  String?   @db.Text
+  fasilitas      String?   @db.Text
+  totalKamar     String?   @db.Text
+  harga          String?   @db.Text
+  Checkout       Checkout?
+}
+
 enum User_role {
   admin
   user
-  kos
+  kost
 }

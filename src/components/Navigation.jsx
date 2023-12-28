@@ -15,14 +15,14 @@ export default function Navigation() {
 
     useEffect(() => {
         getUser().then((res) => {
-            setIsKos(res?.role == "kos");
+            setIsKos(res?.role == "kost");
             setIsAdmin(res?.role == "admin");
         });
     }, []);
 
     return (
         <>
-            <div className="sticky bottom-0 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-t container mx-auto border-gray-200 dark:border-gray-700 flex items-center justify-between rounded-lg">
+            <div className="z-10 sticky bottom-0 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-t container mx-auto border-gray-200 dark:border-gray-700 flex items-center justify-between rounded-lg">
                 <div className="flex flex-row justify-between items-center container mx-auto lg:px-28 xl:px-56">
                     <Link href={"/"} className={`${path == "/" && "bg-gray-400/50"} p-3 px-6 rounded-lg`}>
                         <ImHome size={34} />

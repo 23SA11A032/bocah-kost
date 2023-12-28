@@ -6,7 +6,7 @@ import db from "@/lib/db";
 export async function GET(request, { params }) {
     try {
         var id = Number(params.id);
-        var kos = await db.kos.upsert({ where: { id: id }, update: {}, create: {} });
+        var kos = await db.kost.upsert({ where: { id: id }, update: {}, create: {} });
         return Response.json(kos);
     } catch (error) {
         return new Response(error, { status: 500 });
@@ -20,7 +20,7 @@ export async function POST(request, { params: { id } }) {
     try {
         id = Number(id);
         var body = await request.json();
-        var kos = await db.kos.upsert({ where: { id: id }, update: body, create: body });
+        var kos = await db.kost.upsert({ where: { id: id }, update: body, create: body });
         return Response.json(kos);
     } catch (error) {
         return new Response(error, { status: 500 });

@@ -12,7 +12,6 @@ export default function List() {
     useEffect(() => {
         getKosts().then((r) => {
             setKost([...r]);
-            console.log(r);
         });
     }, []);
 

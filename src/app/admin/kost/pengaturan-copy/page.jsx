@@ -713,7 +713,6 @@ export default function Pengaturan() {
                                                 className="mr-8 bg-red-800"
                                                 onClick={() =>
                                                     setData((d) => {
-                                                        console.log(d);
                                                         d.fasilitas.splice(i, 1);
                                                         return { ...d };
                                                     })

@@ -3,6 +3,7 @@
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import db from "./db";
+import { Prisma } from "@prisma/client";
 const { cpu, mem, os } = require("node-os-utils");
 
 export async function getinfo() {
@@ -28,15 +29,15 @@ export async function logout() {
 }
 
 export async function getKosts() {
-    var kos = await db.kos.findMany();
+    var kos = await db.kost.findMany();
     kos = kos.map((v) => parseData(v));
     return kos;
 }
 
 export async function getKost(id) {
     try {
-        var kos = await db.kos.findUnique({ where: { id } });
-        kos = parseData(kos)
+        var kos = await db.kost.findUnique({ where: { id } });
+        kos = parseData(kos);
         return kos;
     } catch (error) {
         return null;
@@ -45,12 +46,12 @@ export async function getKost(id) {
 
 export async function updateKost(id, data) {
     try {
-        var kost = stringifyData(data);
-        kost = await db.kos.upsert({
-            where: { id: id },
-            create: { ...kost },
-            update: { ...kost },
-        });
+        var kost = stringifyData(data),
+            kost = await db.kost.upsert({
+                where: { id: id },
+                create: { ...kost },
+                update: { ...kost },
+            });
         kost = parseData(kost);
         return kost;
     } catch (error) {
@@ -120,6 +121,41 @@ export async function updateAdmin(data) {
         return admin;
     } catch (error) {
         console.log(error);
+        return error;
+    }
+}
+
+export async function checkout(user, kost) {
+    try {
+        const result = await db.checkout.create({ data: { userId: user, kostId: kost } });
+        return result;
+    } catch (error) {
+        console.log(error.message);
+        return error;
+    }
+}
+
+export async function getCheckout(id) {
+    try {
+        const result = await db.checkout.findUnique({ where: { userId: id } });
+        return result;
+    } catch (error) {
+        console.log(error.message);
+        return error;
+    }
+}
+
+/**
+ *
+ * @param {Prisma.CheckoutFindManyArgs} param0
+ * @returns
+ */
+export async function getCheckouts({ setting }) {
+    try {
+        const result = await db.checkout.findMany(setting);
+        return result;
+    } catch (error) {
+        console.log(error.message);
         return error;
     }
 }

@@ -2,7 +2,7 @@
 
 import Header from "@/components/Header";
 import Navigate from "@/components/Navigation";
-import { getKost } from "@/lib/utils";
+import { checkout, getCheckout, getKost, getUser } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,21 +16,16 @@ import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import Back from "@/components/Back";
 import { Badge, Button, Card } from "flowbite-react";
-
-/**
- * @type {import("@prisma/client").Kos}
- */
-let kost;
-let setKost;
+import db from "@/lib/db";
+import { useRouter } from "next/navigation";
 
 export default function Kosts({ params: { id } }) {
-    [kost, setKost] = useState({});
+    const [kost, setKost] = useState({});
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
     useEffect(() => {
         getKost(Number(id)).then((res) => {
             setKost({ ...res });
-            console.log(res);
         });
     }, []);
 
@@ -96,9 +91,9 @@ export default function Kosts({ params: { id } }) {
                 {/* <pre>{JSON.stringify(kost, null, 4)}</pre> */}
 
                 <div className="pt-3 px-1 md:px-0">
-                    <p className="dark:text-white text-2xl md:text-3xl font-bold">{kost?.nama}</p>
-                    <p className="italic line-clamp-2 text-sm">{kost?.fasilitas?.map((v) => v.name).join(", ")}</p>
-                    <p className="text-3xl font-bold">{formatRupiah(kost?.harga?.bulan, true)}</p>
+                    <p className="dark:text-white text-2xl md:text-3xl font-bold px-4 pb-2 line-clamp-2 md:px-0">{kost?.nama}</p>
+                    <p className="italic line-clamp-2 text-sm px-4 pb-2 md:px-0">{kost?.fasilitas?.map((v) => v.name).join(", ")}</p>
+                    <p className="text-2xl font-bold px-4 pb-2 md:px-0">{formatRupiah(kost?.harga?.bulan, true)}</p>
                 </div>
                 {/* desc */}
                 <div className="px-1 md:px-0 w-full pt-3">
@@ -117,7 +112,7 @@ export default function Kosts({ params: { id } }) {
                             <div className="grid grid-flow-row">
                                 {kost?.fasilitas?.map((v, i) => {
                                     if (v?.status !== true) return;
-                                    return <p>- {v.name}</p>;
+                                    return <p key={i}>- {v.name}</p>;
                                 })}
                             </div>
                         </div>
@@ -131,7 +126,7 @@ export default function Kosts({ params: { id } }) {
                             <div className="grid grid-flow-row">
                                 {kost?.peraturan?.map((v, i) => {
                                     if (v?.status !== true) return;
-                                    return <p>- {v.name}</p>;
+                                    return <p key={i}>- {v.name}</p>;
                                 })}
                             </div>
                         </div>
@@ -155,6 +150,34 @@ export default function Kosts({ params: { id } }) {
  * @returns
  */
 function InfoKost({ kost }) {
+    const router = useRouter();
+    const [ck, setCk] = useState(false);
+
+    const pesan = async () => {
+        try {
+            var user = await getUser();
+            if (user?.role == "admin" || user?.role == "kost") {
+                alert("Role " + user?.role + " tidak boleh mengambil kost");
+            }
+            await checkout(user.id, kost.id);
+            router.push("/kost/my");
+        } catch (error) {
+            console.log(error.message);
+            return error;
+        }
+    };
+
+    useEffect(() => {
+        (async () => {
+            var user = await getUser();
+            var res = await getCheckout(user.id);
+            if (res) {
+                setCk(true);
+                return;
+            }
+        })();
+    }, []);
+
     return (
         <div className="w-full h-full px-1 md:px-0 rounded-lg">
             <div className="dark:bg-gray-700 rounded-lg border bg-slate-50 border-slate-50 dark:border-gray-600">
@@ -182,7 +205,8 @@ function InfoKost({ kost }) {
                     </div>
                     <div className="h-32"></div>
                     <div className="self-end">
-                        <Button>PESAN SEKARANG</Button>
+                        {!ck && <Button onClick={pesan}>PESAN SEKARANG</Button>}
+                        {ck && <Button onClick={() => router.push("/kost/my")}>MY KOST</Button>}
                     </div>
                 </div>
             </div>
