@@ -1,9 +1,9 @@
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { Flowbite, ThemeModeScript } from "flowbite-react";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({ subsets: ["latin"], weight: "400" });
 
 export const metadata = {
     title: "BOCAH KOST",
@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
             <head>
                 <ThemeModeScript />
             </head>
-            <body className={`${inter.className} bg-white text-gray-600 antialiased dark:bg-gray-900 dark:text-gray-400`}>{children}</body>
+            <body className={`${poppins.className} bg-white text-gray-600 antialiased dark:bg-gray-900 dark:text-gray-400`}>{children}</body>
         </html>
     );
 }

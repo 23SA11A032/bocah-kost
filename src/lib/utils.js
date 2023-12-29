@@ -160,6 +160,21 @@ export async function getCheckouts({ setting }) {
     }
 }
 
+/**
+ *
+ * @param {*} id
+ * @param {import("@prisma/client").Checkout} data
+ */
+export async function updateCheckout(id, data) {
+    try {
+        const result = await db.checkout.update({ where: { id: id }, data });
+        return result;
+    } catch (error) {
+        console.log(error.message);
+        return error;
+    }
+}
+
 export async function imgToUrl(file, cb) {
     if (!file) return;
     let formData = new FormData();

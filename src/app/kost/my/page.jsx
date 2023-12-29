@@ -58,7 +58,7 @@ export default function My() {
                                         </div>
                                     </div>
                                     <div className="flex flex-row items-center justify-between gap-3">
-                                        <p className="italic overflow-auto text-nowrap">{ck?.isDone ? "Kost sudah dibayar" : "Kost belum dibayar"}</p>
+                                        <p className="italic overflow-auto text-nowrap pr-2">{ck?.isDone ? "Kost sudah dibayar" : "Kost belum dibayar"}</p>
                                         {/* {!ck?.isDone && (
                                             <Button className="shrink-0" size={"sm"}>
                                                 Keluar dari kost
