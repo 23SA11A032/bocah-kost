@@ -156,6 +156,10 @@ function InfoKost({ kost }) {
     const pesan = async () => {
         try {
             var user = await getUser();
+            if (!user) {
+                alert("Harus login terlebih dahulu")
+                return
+            }
             if (user?.role == "admin" || user?.role == "kost") {
                 alert("Role " + user?.role + " tidak boleh mengambil kost");
             }
